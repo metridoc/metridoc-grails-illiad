@@ -1,0 +1,184 @@
+<!--
+
+    Copyright 2010 Trustees of the University of Pennsylvania Licensed under the
+    Educational Community License, Version 2.0 (the "License"); you may
+    not use this file except in compliance with the License. You may
+    obtain a copy of the License at
+
+    http://www.osedu.org/licenses/ECL-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an "AS IS"
+    BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+    or implied. See the License for the specific language governing
+    permissions and limitations under the License.
+
+-->
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet author="pkeavney" id="illiad-01" context="illiad" dbms="mysql,h2">
+        <comment>generate illiad-specific database objects</comment>
+
+        <createTable tableName="ill_borrowing">
+            <column name="transaction_number" type="INT(11)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="request_type" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="transaction_status" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="transaction_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="ill_group">
+            <column name="group_no" type="INT(1)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="group_name" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="ill_lender_group">
+            <column name="group_no" type="INT(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="lender_code" type="VARCHAR(16)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="demographic" type="INT(11)"/>
+        </createTable>
+
+        <createTable tableName="ill_lender_info">
+            <column name="lender_code" type="VARCHAR(16)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="library_name" type="VARCHAR(70)"/>
+            <column name="billing_category" type="VARCHAR(50)"/>
+            <column name="address" type="VARCHAR(328)"/>
+        </createTable>
+
+        <createTable tableName="ill_lending">
+            <column name="transaction_number" type="INT(11)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="request_type" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="transaction_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="ill_lending_tracking">
+            <column name="transaction_number" type="INT(11)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="request_type" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="arrival_date" type="DATETIME"/>
+            <column name="completion_date" type="DATETIME"/>
+            <column name="completion_status" type="VARCHAR(50)"/>
+        </createTable>
+
+        <createTable tableName="ill_location">
+            <column name="id" type="BIGINT(20)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="location" type="VARCHAR(50)"/>
+            <column name="abbrev" type="VARCHAR(5)"/>
+        </createTable>
+
+        <createTable tableName="ill_reference_number">
+            <column name="transaction_number" type="INT(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="oclc" type="VARCHAR(20)"/>
+            <column name="ref_type" type="VARCHAR(50)"/>
+            <column name="ref_number" type="VARCHAR(255)"/>
+        </createTable>
+
+        <createTable tableName="ill_tracking">
+            <column name="transaction_number" type="INT(11)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="request_type" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="process_type" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="request_date" type="DATETIME"/>
+            <column name="ship_date" type="DATETIME"/>
+            <column name="receive_date" type="DATETIME"/>
+            <column name="order_date" type="DATETIME"/>
+        </createTable>
+
+        <createTable tableName="ill_transaction">
+            <column name="transaction_number" type="INT(20)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="user_name" type="BIGINT(20)"/>
+            <column name="request_type" type="VARCHAR(8)"/>
+            <column name="loan_author" type="VARCHAR(100)"/>
+            <column name="loan_title" type="VARCHAR(255)"/>
+            <column name="loan_publisher" type="VARCHAR(50)"/>
+            <column name="loan_location" type="VARCHAR(30)"/>
+            <column name="loan_date" type="VARCHAR(30)"/>
+            <column name="loan_edition" type="VARCHAR(30)"/>
+            <column name="photo_journal_title" type="VARCHAR(255)"/>
+            <column name="photo_journal_volume" type="VARCHAR(30)"/>
+            <column name="photo_journal_issue" type="VARCHAR(30)"/>
+            <column name="photo_journal_month" type="VARCHAR(30)"/>
+            <column name="photo_journal_year" type="VARCHAR(30)"/>
+            <column name="photo_journal_inclusive_pages" type="VARCHAR(30)"/>
+            <column name="photo_article_author" type="VARCHAR(100)"/>
+            <column name="photo_article_title" type="VARCHAR(250)"/>
+            <column name="cited_in" type="VARCHAR(40)"/>
+            <column name="transaction_status" type="VARCHAR(40)"/>
+            <column name="transaction_date" type="DATETIME"/>
+            <column name="issn" type="VARCHAR(20)"/>
+            <column name="esp_number" type="VARCHAR(32)"/>
+            <column name="lender_codes" type="VARCHAR(150)"/>
+            <column name="lending_library" type="VARCHAR(16)"/>
+            <column name="reason_for_cancellation" type="VARCHAR(100)"/>
+            <column name="call_number" type="VARCHAR(100)"/>
+            <column name="location" type="VARCHAR(255)"/>
+            <column name="process_type" type="VARCHAR(10)"/>
+            <column name="system_id" type="VARCHAR(32)"/>
+            <column name="ifm_cost" type="VARCHAR(30)"/>
+            <column name="in_process_date" type="VARCHAR(8)"/>
+            <column name="billing_amount" type="VARCHAR(15)"/>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="load_time" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="VARCHAR(32)"/>
+        </createTable>
+
+        <createTable tableName="ill_user_info">
+            <column name="user_id" type="VARCHAR(32)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="rank" type="VARCHAR(32)"/>
+            <column name="department" type="VARCHAR(120)"/>
+            <column name="org" type="VARCHAR(5)"/>
+            <column name="nvtgc" type="VARCHAR(8)"/>
+        </createTable>
+
+        <modifySql dbms="mysql">
+            <append value=" DEFAULT CHARSET=utf8"/>
+        </modifySql>
+
+    </changeSet>
+
+</databaseChangeLog>
