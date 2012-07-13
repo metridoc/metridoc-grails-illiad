@@ -1,6 +1,7 @@
-queries {
+metridoc {
     illiad {
-        transactionCountsBorrowing = '''
+        queries {
+            transactionCountsBorrowing = '''
 		select IFNULL(lg.group_no,-2) as group_no,
 		IFNULL(g.group_name,'Other') group_name,
 		count(distinct t.transaction_number) transNum,
@@ -13,7 +14,7 @@ queries {
 			group by group_no WITH ROLLUP
 		'''
 
-        transactionTurnaroundsBorrowing = '''
+            transactionTurnaroundsBorrowing = '''
 		select IFNULL(lg.group_no,-2) as group_no,
 		AVG(DATEDIFF(receive_date, ship_date)) as turnaroundShpRec,
 		AVG(DATEDIFF(ship_date, request_date))as turnaroundReqShp,
@@ -27,7 +28,7 @@ queries {
 			group by group_no
 		'''
 
-        transactionCountsLending = '''
+            transactionCountsLending = '''
 		select IFNULL(lg.group_no,-2) as group_no,
 		IFNULL(g.group_name,'Other') group_name,
 		count(distinct t.transaction_number) transNum,
@@ -41,7 +42,7 @@ queries {
 		'''
 
 
-        transactionTurnaroundsLending = '''
+            transactionTurnaroundsLending = '''
 		select IFNULL(lg.group_no,-2) as group_no,
 		AVG(DATEDIFF(lt.completion_date, lt.arrival_date)) as turnaround
 		from ill_transaction t
@@ -53,9 +54,9 @@ queries {
 			group by group_no
 		'''
 
-        /* Need to get turnarounds for row Total separately, to avoid double counts
-           (because of joining with lending_group)*/
-        transactionTotalTurnaroundsBorrowing = '''
+            /* Need to get turnarounds for row Total separately, to avoid double counts
+        (because of joining with lending_group)*/
+            transactionTotalTurnaroundsBorrowing = '''
 		select AVG(DATEDIFF(receive_date, ship_date)) as turnaroundShpRec,
 		AVG(DATEDIFF(ship_date, request_date))as turnaroundReqShp,
 		AVG(DATEDIFF(receive_date, request_date)) as turnaroundReqRec
@@ -65,7 +66,7 @@ queries {
 			and transaction_status='Request Finished' and request_date is not null and ship_date is not null and receive_date is not null
 		'''
 
-        transactionTotalTurnaroundsLending = '''
+            transactionTotalTurnaroundsLending = '''
 		select AVG(DATEDIFF(lt.completion_date, lt.arrival_date)) as turnaround
 		from ill_transaction t
 			left join ill_lending_tracking lt on t.transaction_number=lt.transaction_number
@@ -73,6 +74,7 @@ queries {
 			and transaction_status='Request Finished' and lt.completion_date is not null and lt.arrival_date is not null
 		'''
 
-        lenderGroupList = '''select * from ill_group'''
+            lenderGroupList = '''select * from ill_group'''
+        }
     }
 }
