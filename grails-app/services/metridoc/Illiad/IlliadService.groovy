@@ -3,6 +3,7 @@ package metridoc.Illiad
 import javax.sql.DataSource
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import groovy.sql.Sql
+import metridoc.utils.DateUtil
 
 class IlliadService {
 
@@ -10,12 +11,13 @@ class IlliadService {
 	private static int GROUP_ID_TOTAL = -1;
 
     static transactional = true
-	DataSource dataSource
+	DataSource dataSource_illiad
+    def grailsApplication
 
 	def config = ConfigurationHolder.config
 
     def getBasicStatsData(fiscalYear) {
-		Sql sql = new Sql(dataSource);
+		Sql sql = new Sql(dataSource_illiad);
 		def result = ['books':[:], 'articles':[:]];
 		def reportFiscalYear = fiscalYear != null?fiscalYear: DateUtil.getCurrentFiscalYear();
 
@@ -29,17 +31,20 @@ class IlliadService {
     }
 
 	def loadSectionData(sql, isBooks, isBorrowing, startDate, endDate){
-		def genQuery = isBorrowing?ConfigurationHolder.config.queries.illiad.transactionCountsBorrowing:
-		ConfigurationHolder.config.queries.illiad.transactionCountsLending;
 
-		def turnaroundQuery = isBorrowing?ConfigurationHolder.config.queries.illiad.transactionTotalTurnaroundsBorrowing:
-		ConfigurationHolder.config.queries.illiad.transactionTotalTurnaroundsLending;
+        def queries = grailsApplication.config.metridoc.illiad.queries
 
-		def turnaroundPerGroupQuery = isBorrowing?ConfigurationHolder.config.queries.illiad.transactionTurnaroundsBorrowing:
-		ConfigurationHolder.config.queries.illiad.transactionTurnaroundsLending;
+        def pickQuery = {borrowingQuery, lendingQuery ->
+            isBorrowing ? borrowingQuery : lendingQuery
+        }
 
-		def processType = isBorrowing?'Borrowing':'Lending';
-		def requestType = isBooks?'Loan':'Article';
+        def genQuery = pickQuery(queries.transactionCountsBorrowing, queries.transactionCountsLending)
+        def turnaroundQuery = pickQuery(queries.transactionTotalTurnaroundsBorrowing, queries.transactionTotalTurnaroundsLending)
+        def turnaroundPerGroupQuery = pickQuery(queries.transactionTurnaroundsBorrowing, queries.transactionTurnaroundsLending)
+
+
+		def processType = isBorrowing ? 'Borrowing' : 'Lending';
+		def requestType = isBooks ? 'Loan' : 'Article';
 
 		def result = [:];
 
@@ -116,7 +121,7 @@ class IlliadService {
 	}
 
 	def getGroupList(){
-		Sql sql = new Sql(dataSource);
+		Sql sql = new Sql(dataSource_illiad);
 		return sql.rows(config.queries.illiad.lenderGroupList, [])
 	}
 }
