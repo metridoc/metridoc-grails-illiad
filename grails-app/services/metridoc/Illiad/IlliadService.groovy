@@ -26,7 +26,7 @@ class IlliadService {
 
 		Date fiscalYearStart = DateUtil.getFiscalYearStartDate(reportFiscalYear)
 		Date fiscalYearEnd = DateUtil.getFiscalYearEndDate(reportFiscalYear)
-		result.books.borrowing = loadSectionData(sql, true, true, fiscalYearStart, fiscalYearEnd);
+        result.books.borrowing = loadSectionData(sql, true, true, fiscalYearStart, fiscalYearEnd);
 		result.books.lending = loadSectionData(sql, true, false, fiscalYearStart, fiscalYearEnd);
 		result.articles.borrowing = loadSectionData(sql, false, true, fiscalYearStart, fiscalYearEnd);
 		result.articles.lending = loadSectionData(sql, false, false, fiscalYearStart, fiscalYearEnd);
@@ -34,6 +34,8 @@ class IlliadService {
     }
 
 	def loadSectionData(sql, isBooks, isBorrowing, startDate, endDate){
+
+        log.info("loading sectional data with isBooks: $isBooks, isBorrowing: $isBorrowing, startDate: $startDate, endDate: $endDate")
 
         def pickQuery = {borrowingQuery, lendingQuery ->
             isBorrowing ? borrowingQuery : lendingQuery
@@ -56,7 +58,7 @@ class IlliadService {
 		String queryExhausted = getAdjustedQuery(genQuery,
 			['add_condition': ' and not (transaction_status<=>\'Request Finished\')']);
 
-		log.debug("Running query for filledQueries (borrowing=${isBorrowing}, book=#{isBook}): " + queryFilled + " params="+sqlParams)
+		log.info("Running query for filledQueries (borrowing=${isBorrowing}, book=${isBooks}): " + queryFilled + " params="+sqlParams)
 		sql.eachRow(queryFilled, sqlParams, {
 			int groupId = it.getAt(0) != null?it.getAt(0):GROUP_ID_TOTAL;
 			def groupData = getGroupDataMap(groupId, result)
@@ -114,7 +116,7 @@ class IlliadService {
 	}
 
 	private String getAdjustedQuery(query, stringMap){
-		String result = query;
+        String result = query;
 		stringMap.each() { key, value ->
 			result = result.replaceAll("\\{${key}\\}", value)
 		};
