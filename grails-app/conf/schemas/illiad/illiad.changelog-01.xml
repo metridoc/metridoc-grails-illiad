@@ -181,4 +181,31 @@
 
     </changeSet>
 
+    <changeSet id="illiad-02" context="illiad" dbms="mysql,h2" author="Tommy Barker">
+        <createIndex tableName="ill_borrowing" indexName="idx_ill_borrowing_transaction_status">
+            <column name="transaction_status"/>
+        </createIndex>
+        <createIndex tableName="ill_tracking" indexName="idx_ill_tracking_order_date">
+            <column name="order_date"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="illiad-03" context="illiad" author="Tommy Barker">
+        <createIndex tableName="ill_borrowing" indexName="idx_ill_bor_trans_status__trans_num">
+            <column name="transaction_number"/>
+            <column name="transaction_status"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="illiad-04" context="illiad" author="Tommy Barker">
+        <createIndex tableName="ill_tracking" indexName="idx_ill_tracking_ship_date">
+            <column name="ship_date"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="illiad-05" context="illiad" author="Tommy Barker" dbms="mysql,h2">
+        <createIndex tableName="ill_borrowing" indexName="idx_ill_borrowing_transaction_number">
+            <column name="transaction_number"/>
+        </createIndex>
+    </changeSet>
 </databaseChangeLog>
