@@ -14,7 +14,10 @@ class IlliadService {
 	DataSource dataSource_illiad
     def grailsApplication
 
-	def config = ConfigurationHolder.config
+    def getQueries() {
+        grailsApplication.config.metridoc.illiad.queries
+    }
+
 
     def getBasicStatsData(fiscalYear) {
 		Sql sql = new Sql(dataSource_illiad);
@@ -31,8 +34,6 @@ class IlliadService {
     }
 
 	def loadSectionData(sql, isBooks, isBorrowing, startDate, endDate){
-
-        def queries = grailsApplication.config.metridoc.illiad.queries
 
         def pickQuery = {borrowingQuery, lendingQuery ->
             isBorrowing ? borrowingQuery : lendingQuery
@@ -55,7 +56,7 @@ class IlliadService {
 		String queryExhausted = getAdjustedQuery(genQuery,
 			['add_condition': ' and not (transaction_status<=>\'Request Finished\')']);
 
-		log.debug("Runnig query for filledQueries (borrowing=${isBorrowing}, book=#{isBook}): " + queryFilled + " params="+sqlParams)
+		log.debug("Running query for filledQueries (borrowing=${isBorrowing}, book=#{isBook}): " + queryFilled + " params="+sqlParams)
 		sql.eachRow(queryFilled, sqlParams, {
 			int groupId = it.getAt(0) != null?it.getAt(0):GROUP_ID_TOTAL;
 			def groupData = getGroupDataMap(groupId, result)
@@ -64,7 +65,7 @@ class IlliadService {
 			//setTurnarounds(isBorrowing, groupData, it)
 		})
 
-		log.debug("Runnig query for turnaroundPerGroupQuery (borrowing=${isBorrowing}, book=#{isBook}): " + turnaroundPerGroupQuery + " params="+sqlParams)
+		log.debug("Running query for turnaroundPerGroupQuery (borrowing=${isBorrowing}, book=#{isBook}): " + turnaroundPerGroupQuery + " params="+sqlParams)
 		sql.eachRow(turnaroundPerGroupQuery, sqlParams, {
 			int groupId = it.getAt(0);
 			def groupData = getGroupDataMap(groupId, result)
@@ -73,12 +74,12 @@ class IlliadService {
 
 		/* Set corrected turnarounds for total row(rollup double counts
 		   because transaction can belong to more then one group) */
-		log.debug("Runnig query for turnaroundQuery (total) (borrowing=${isBorrowing}, book=#{isBook}): " + turnaroundQuery + " params="+sqlParams)
+		log.debug("Running query for turnaroundQuery (total) (borrowing=${isBorrowing}, book=#{isBook}): " + turnaroundQuery + " params="+sqlParams)
 		def totalGroupTurnarounds = sql.firstRow(turnaroundQuery, sqlParams);
 		setTurnarounds(isBorrowing, getGroupDataMap(GROUP_ID_TOTAL, result), totalGroupTurnarounds)
 
 
-		log.debug("Runnig query for exhausted requests (borrowing=${isBorrowing}, book=#{isBook}): " + queryExhausted + " params="+sqlParams)
+		log.debug("Running query for exhausted requests (borrowing=${isBorrowing}, book=#{isBook}): " + queryExhausted + " params="+sqlParams)
 		sql.eachRow(queryExhausted, sqlParams, {
 			int groupId = it.getAt(0) != null?it.getAt(0):GROUP_ID_TOTAL;
 			def groupData = getGroupDataMap(groupId, result)
@@ -122,6 +123,6 @@ class IlliadService {
 
 	def getGroupList(){
 		Sql sql = new Sql(dataSource_illiad);
-		return sql.rows(config.queries.illiad.lenderGroupList, [])
+		return sql.rows(queries.lenderGroupList, [])
 	}
 }
