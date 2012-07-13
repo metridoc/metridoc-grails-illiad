@@ -1,6 +1,8 @@
 package metridoc.Illiad
 
-            class IlliadController {
+import metridoc.ReportController
 
-                def index() { }
-            }
+class IlliadController extends ReportController{
+
+
+}
