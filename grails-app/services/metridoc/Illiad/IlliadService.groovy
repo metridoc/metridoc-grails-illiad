@@ -10,17 +10,15 @@ class IlliadService {
     private static int GROUP_ID_OTHER = -2;
     private static int GROUP_ID_TOTAL = -1;
 
-    static transactional = true
-    DataSource dataSource_illiad
+    DataSource dataSourceUnproxied_illiad
     def grailsApplication
 
     def getQueries() {
         grailsApplication.config.metridoc.illiad.queries
     }
 
-
     def getBasicStatsData(fiscalYear) {
-        Sql sql = new Sql(dataSource_illiad);
+        Sql sql = new Sql(dataSourceUnproxied_illiad);
         def result = ['books': [:], 'articles': [:]];
         def reportFiscalYear = fiscalYear != null ? fiscalYear : DateUtil.getCurrentFiscalYear();
 
@@ -129,7 +127,7 @@ class IlliadService {
     }
 
     def getGroupList() {
-        Sql sql = new Sql(dataSource_illiad);
+        Sql sql = new Sql(dataSourceUnproxied_illiad);
         return sql.rows(queries.lenderGroupList, [])
     }
 
