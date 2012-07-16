@@ -208,4 +208,20 @@
             <column name="transaction_number"/>
         </createIndex>
     </changeSet>
+
+    <changeSet id="illiad-06" author="Tommy Barker" context="illiad" dbms="mysql,h2">
+        <modifyDataType tableName="ill_lending_tracking" columnName="transaction_number" newDataType="int(20)"/>
+    </changeSet>
+    
+    <changeSet id="illiad-07" author="Tommy Barker" context="illiad" dbms="mysql,h2">
+        <createIndex tableName="ill_lender_group" indexName="idx_ill_lender_group_lender_code">
+            <column name="lender_code"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="illiad-08" author="Tommy Barker" context="illiad" dbms="mysql,h2">
+        <createIndex tableName="ill_transaction" indexName="idx_ill_transaction_transaction_date">
+            <column name="transaction_date"/>
+        </createIndex>
+    </changeSet>
 </databaseChangeLog>
