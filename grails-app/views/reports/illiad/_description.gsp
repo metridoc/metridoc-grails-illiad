@@ -1,1 +1,0 @@
-These dashboards provide statistics for the Illiad system, for the most recent fiscal year
