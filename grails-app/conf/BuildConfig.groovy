@@ -22,6 +22,7 @@ grails.project.dependency.resolution = {
     plugins {
         compile (":metridoc-core:0.50-SNAPSHOT") {
             exclude "xmlbeans"
+            changing = true
         }
         build(":tomcat:$grailsVersion",
             ":release:2.0.3") {
