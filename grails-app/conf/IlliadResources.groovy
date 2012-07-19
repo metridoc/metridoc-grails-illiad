@@ -1,7 +1,9 @@
 modules = {
     illiad {
         dependsOn 'jquery-ui'
-        resource url: 'illiad/css/illiad.css'
-        resource url: 'illiad/js/illiad.js'
+        resource id: 'css',
+                url: [plugin: "metridocIlliad", dir:'illiad/css', file: 'illiad.css']
+        resource id: 'js',
+                url: [plugin: "metridocIlliad", dir:'illiad/js', file: 'illiad.js']
     }
 }
