@@ -9,8 +9,6 @@ target(main: "main entry point into the illiad script") {
         println "bootstrap enabled"
     }
 
-
-
     def cliParams = argsMap.params
 
     if(cliParams) {

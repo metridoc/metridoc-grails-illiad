@@ -19,7 +19,7 @@
    </thead>
    <tbody>
     <g:set var="currentDataMap" value="${summaryData.get(-1) != null ? summaryData.get(-1):[:]}" />
-   <g:render template="/reports/illiad/summary_row"
+   <g:render template="/illiad/summary_row"
 	model="[currentDataMap:currentDataMap,
 			index:0,
 			groupName: allRowName,
@@ -56,7 +56,7 @@
    </thead>
    <tbody>
     <g:set var="currentDataMap" value="${summaryData.get(-1) != null ? summaryData.get(-1):[:]}" />
-   <g:render template="/reports/illiad/summary_row"
+   <g:render template="/illiad/summary_row"
 	model="[currentDataMap:currentDataMap,
 			index:0,
 			groupName: allRowName,
@@ -82,14 +82,14 @@
    <tbody>
 <g:each var="group" status="i" in="${groups}">
    <g:set var="currentDataMap" value="${summaryData.get(group.group_no.intValue()) != null ? summaryData.get(group.group_no.intValue()): [:]}" />
-    <g:render template="/reports/illiad/summary_row"
+    <g:render template="/illiad/summary_row"
 	model="[currentDataMap:currentDataMap,
 			index:(i+1),
 			groupName: group.group_name,
 			isBorrowing:isBorrowing]" />
 </g:each>
 <g:set var="currentDataMap" value="${summaryData.get(-2) != null ? summaryData.get(-2):[:]}" />
-   <g:render template="/reports/illiad/summary_row"
+   <g:render template="/illiad/summary_row"
 	model="[currentDataMap:currentDataMap,
 			index:groups.size()+1,
 			groupName: 'Other',

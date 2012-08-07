@@ -21,7 +21,7 @@ hibernate {
 
 inMemoryDataSource = {
     dbCreate = "none" // one of 'create', 'create-drop', 'update', 'validate', ''
-    url = "jdbc:h2:mem:developmentDb;MVCC=TRUE"
+    url = "jdbc:h2:~/.metridoc/db;MVCC=TRUE"
     logSql = true
 }
 

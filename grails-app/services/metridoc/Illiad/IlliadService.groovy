@@ -11,11 +11,7 @@ class IlliadService {
     private static int GROUP_ID_TOTAL = -1;
 
     DataSource dataSourceUnproxied_illiad
-    def grailsApplication
-
-    def getQueries() {
-        grailsApplication.config.metridoc.illiad.queries
-    }
+    def illiadQueriesService
 
     def getBasicStatsData(fiscalYear) {
         Sql sql = new Sql(dataSourceUnproxied_illiad);
@@ -39,9 +35,9 @@ class IlliadService {
             isBorrowing ? borrowingQuery : lendingQuery
         }
 
-        def genQuery = pickQuery(queries.transactionCountsBorrowing, queries.transactionCountsLending)
-        def turnaroundQuery = pickQuery(queries.transactionTotalTurnaroundsBorrowing, queries.transactionTotalTurnaroundsLending)
-        def turnaroundPerGroupQuery = pickQuery(queries.transactionTurnaroundsBorrowing, queries.transactionTurnaroundsLending)
+        def genQuery = pickQuery(illiadQueriesService.transactionCountsBorrowing, illiadQueriesService.transactionCountsLending)
+        def turnaroundQuery = pickQuery(illiadQueriesService.transactionTotalTurnaroundsBorrowing, illiadQueriesService.transactionTotalTurnaroundsLending)
+        def turnaroundPerGroupQuery = pickQuery(illiadQueriesService.transactionTurnaroundsBorrowing, illiadQueriesService.transactionTurnaroundsLending)
 
 
         def processType = isBorrowing ? 'Borrowing' : 'Lending';
@@ -128,13 +124,14 @@ class IlliadService {
 
     def getGroupList() {
         Sql sql = new Sql(dataSourceUnproxied_illiad);
-        return sql.rows(queries.lenderGroupList, [])
+        return sql.rows(illiadQueriesService.lenderGroupList, [])
     }
 
     def profile(String message, Closure closure) {
+        log.info "Profiling: [${message}] START"
         def start = new Date().time
         closure.call()
         def end = new Date().time
-        log.info "Profiling: [${message}] took ${end - start} ms"
+        log.info "Profiling: [${message}] END took ${end - start} ms"
     }
 }

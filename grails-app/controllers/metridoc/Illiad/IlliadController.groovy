@@ -1,13 +1,11 @@
 package metridoc.Illiad
 
-import metridoc.ReportController
+class IlliadController {
 
-class IlliadController extends ReportController {
-
+    static reportName = "Illiad Dashboards"
     def illiadService
 
-    @Override
-    def getModel() {
+    def index() {
         [
             'basicStatsData': illiadService.getBasicStatsData(null),
             'groups': illiadService.getGroupList()

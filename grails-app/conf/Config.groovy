@@ -13,23 +13,10 @@
  * permissions and limitations under the License.
  */
 
+import metridoc.targets._DataSourceLoader
 import org.springframework.util.ClassUtils
+import metridoc.dsl.JobBuilder
 
-/*
-* Copyright 2010 Trustees of the University of Pennsylvania Licensed under the
-* Educational Community License, Version 2.0 (the "License"); you may
-* not use this file except in compliance with the License. You may
-* obtain a copy of the License at
-*
-* http://www.osedu.org/licenses/ECL-2.0
-*
-* Unless required by applicable law or agreed to in writing,
-* software distributed under the License is distributed on an "AS IS"
-* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
-* or implied. See the License for the specific language governing
-* permissions and limitations under the License.
-*/
-// locations to search for config files that get merged into the main config
 // config files can either be Java properties files or ConfigSlurper scripts
 
 // grails.config.locations = [ "classpath:${appName}-config.properties",
@@ -41,33 +28,30 @@ import org.springframework.util.ClassUtils
 //    grails.config.locations << "file:" + System.properties["${appName}.config.location"]
 // }
 
+def rootLoader = Thread.currentThread().contextClassLoader.rootLoader
+
+if (rootLoader) {
+    def loader = new _DataSourceLoader()
+
+    JobBuilder.isJob(loader)
+    loader.rootLoader = rootLoader
+    loader.grailsConsole = [
+        info: {String message ->
+            println message
+        }
+    ]
+    loader.run()
+    println "loading database drivers"
+    loader.loadDrivers()
+}
+
+
 grails.converters.default.pretty.print = true
 metridoc.home = "${userHome}/.metridoc"
-metridoc.all.applications = ["global", "illiad", "counter", "ezproxy", "admin", "shiro"]
-
-//add all applications that should have anonymous logins, maybe you are putting metridoc behind a firewall or need a
-//quick test?
-metridoc.anonymous.applications = []
 
 grails.dbconsole.enabled = true
 grails.dbconsole.urlRoot = '/admin/dbconsole'
 grails.config.locations = []
-def enableAuthentication = System.getProperty("metridoc.authenticate.enable")
-metridoc.authenticate.enable = enableAuthentication ? Boolean.valueOf(enableAuthentication) : true
-
-metridoc.all.applications.each {applicationName ->
-
-    try {
-        def className = "metridoc.${applicationName.capitalize()}Config"
-        def clazz = ClassUtils.forName(className)
-        println "INFO: adding config ${className}"
-        grails.config.locations << clazz
-    } catch (Exception ex) {
-
-    }
-
-    grails.config.locations << "file:${metridoc.home}/${applicationName}/${applicationName.capitalize()}Config.groovy"
-}
 
 if (new File("${metridoc.home}/MetridocConfig.groovy").exists()) {
     log.info "found MetridocConfig.groovy, will add to configuration"
@@ -133,6 +117,7 @@ environments {
         grails.logging.jul.usebridge = true
         grails.gsp.reload.enable = true
         grails.resources.processing.enabled = true
+        grails.resources.debug = true
     }
     production {
         grails.logging.jul.usebridge = false
@@ -158,7 +143,7 @@ log4j = {
             file: "${config.metridoc.home}/logs/metridoc-stacktrace.log"
     }
 
-    info 'org.codehaus.groovy.grails.web.servlet',  //  controllers
+    error 'org.codehaus.groovy.grails.web.servlet',  //  controllers
         'org.codehaus.groovy.grails.web.pages', //  GSP
         'org.codehaus.groovy.grails.web.sitemesh', //  layouts
         'org.codehaus.groovy.grails.web.mapping.filter', // URL mapping
@@ -168,15 +153,19 @@ log4j = {
         'org.codehaus.groovy.grails.orm.hibernate', // hibernate integration
         'org.springframework',
         'org.hibernate',
-        'net.sf.ehcache.hibernate'
+        'net.sf.ehcache.hibernate',
+        'org.apache'
+
+    warn 'metridoc.camel'
 
     root {
         info 'stdout', 'file'
     }
 }
-//set authors in documentation
+
+//change the document parameters if creating a user manual for a plugin
 grails.doc.authors = "Thomas Barker, Weizhuo Wu"
 
 grails.doc.subtitle = " "
 
-grails.doc.title = "MetridocReports"
+grails.doc.title = "MetriDoc User Manual"

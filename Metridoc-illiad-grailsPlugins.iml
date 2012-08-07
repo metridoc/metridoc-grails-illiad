@@ -40,6 +40,7 @@
       <sourceFolder url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-illiad/plugins/metridoc-core-0.50-SNAPSHOT/grails-app/controllers" isTestSource="false" />
       <sourceFolder url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-illiad/plugins/metridoc-core-0.50-SNAPSHOT/grails-app/domain" isTestSource="false" />
       <sourceFolder url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-illiad/plugins/metridoc-core-0.50-SNAPSHOT/grails-app/services" isTestSource="false" />
+      <sourceFolder url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-illiad/plugins/metridoc-core-0.50-SNAPSHOT/grails-app/taglib" isTestSource="false" />
     </content>
     <content url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-illiad/plugins/release-2.0.3">
       <sourceFolder url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-illiad/plugins/release-2.0.3/src/java" isTestSource="false" />
