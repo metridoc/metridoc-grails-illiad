@@ -15,6 +15,15 @@
 package metridoc.workflows
 
 import groovy.sql.Sql
+import metridoc.utils.DateUtil
+import java.text.SimpleDateFormat
+
+if(!binding.hasVariable("startDate")) {
+    def fiscalYear = DateUtil.currentFiscalYear
+    def formatter = new SimpleDateFormat('yyyyMMdd')
+    def startDateAsDate = DateUtil.getFiscalYearStartDate(fiscalYear)
+    startDate = formatter.format(startDateAsDate)
+}
 
 groupSql = "select group_name from ill_group"
 
@@ -42,21 +51,21 @@ transactionSqlStmt = "select TransactionNumber as transaction_number, " +
     " LendingLibrary as lending_library, ReasonForCancellation as reason_for_cancellation, CallNumber as call_number, " +
     " Location as location, ProcessType as process_type, SystemID as system_id, IFMCost as IFM_cost, " +
     " InProcessDate as in_process_date, BillingAmount as billing_amount from Transactions " +
-    " where TransactionStatus in ('Request Finished','Cancelled by ILL Staff') and convert(varchar(11), TransactionDate, 112) >'20110701'"
+    " where TransactionStatus in ('Request Finished','Cancelled by ILL Staff') and convert(varchar(11), TransactionDate, 112) >'${startDate}'"
 
 borrowingSqlStmt = "select t2.TransactionNumber as transaction_number, t1.RequestType as request_type, " +
     " t2.ChangedTo as transaction_status, min(t2.DateTime) as transaction_date " +
     " from Transactions t1 join Tracking t2 on t2.TransactionNumber=t1.TransactionNumber " +
     " where t1.ProcessType = 'Borrowing' and t1.TransactionStatus in ('Request Finished','Request Conditionalized','Cancelled by ILL Staff') and " +
     " t2.ChangedTo in ('Awaiting Copyright Clearance','Awaiting Request Processing','Request Sent','Awaiting Post Receipt Processing','Delivered to Web') and " +
-    " convert(varchar(11), t1.TransactionDate, 112) >'20110701' " +
+    " convert(varchar(11), t1.TransactionDate, 112) >'${startDate}' " +
     " group by t2.TransactionNumber, t1.RequestType, t2.ChangedTo " +
     " UNION " +
     " select h.TransactionNumber as transaction_number, t.RequestType as request_type, " +
     " 'Shipped' as transaction_status, min(h.DateTime) as transaction_date " +
     " from Transactions t join History h on h.TransactionNumber = t.TransactionNumber " +
     " where t.ProcessType = 'Borrowing' and t.TransactionStatus in ('Request Finished','Request Conditionalized','Cancelled by ILL Staff') and " +
-    " h.UserName = 'System' and CHARINDEX('shipped', entry) > 0 and convert(varchar(11), t.TransactionDate, 112) >'20110701' " +
+    " h.UserName = 'System' and CHARINDEX('shipped', entry) > 0 and convert(varchar(11), t.TransactionDate, 112) >'${startDate}' " +
     " group by h.TransactionNumber, t.RequestType"
 
 requestDateSqlStmt = "replace into ill_tracking (transaction_number, request_type, process_type, request_date) " +
@@ -85,7 +94,7 @@ articleReceiveDateSqlStmt = "update ill_tracking t set receive_date = " +
 
 lendingSqlStmt = "select t2.TransactionNumber as transaction_number, t1.RequestType as request_type, t2.ChangedTo as status, min(t2.DateTime) as transaction_date " +
     " from Transactions t1 join Tracking t2 on t2.TransactionNumber = t1.TransactionNumber and t1.ProcessType = 'Lending' " +
-    " where convert(varchar(11), t1.TransactionDate, 112) >'20110701' and " +
+    " where convert(varchar(11), t1.TransactionDate, 112) >'${startDate}' and " +
     " (t1.RequestType = 'Article' and t2.ChangedTo in ('Awaiting Lending Request Processing','Request Finished','Request Conditionalized','Cancelled by ILL Staff')) or " +
     " (t1.RequestType = 'Loan' and t2.ChangedTo in ('Awaiting Lending Request Processing','Awaiting Mailing', 'Item Shipped','Request Conditionalized','Cancelled by ILL Staff')) " +
     " group by t2.TransactionNumber, t1.RequestType, t2.ChangedTo"

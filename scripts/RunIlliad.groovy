@@ -10,6 +10,16 @@ target(main: "main entry point into the illiad script") {
     }
 
     def cliParams = argsMap.params
+    def startDateParam = argsMap.startDate
+
+    if(startDateParam) {
+        startDate = startDateParam
+        def isDate = startDate ==~ /\d{8}/
+        if(!isDate) {
+            def message = "startDate must be in the form 'yyyyMMdd', but was ${startDate}"
+            throw new RuntimeException(message)
+        }
+    }
 
     if(cliParams) {
         depends(cliParams)

@@ -29,7 +29,7 @@ includeTargets << new File("scripts/_IlliadConfig.groovy")
 JobBuilder.isJob(this)
 
 target(runIlliadWorkflow: "runs the entire workflow for illiad") {
-    grailsConsole.info "running illiad"
+    grailsConsole.info "running illiad starting at ${startDate}"
     depends(configureDataSources)
 
     depends(

@@ -40,14 +40,14 @@ class DateUtil {
 		return DateUtil.getFiscalYear(currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH))
 	}
 
-	private static Date getFiscalYearStartDate(int fiscalYear){
+	public static Date getFiscalYearStartDate(int fiscalYear){
 		return getDateStartOfDay(fiscalYear - 1, FY_START_MONTH, 1)
 	}
 	public static int getFiscalYearEndMonth(){
 		return FY_START_MONTH - 1;
 	}
 
-	private static Date getFiscalYearEndDate(int fiscalYear){
+	public static Date getFiscalYearEndDate(int fiscalYear){
 		def endMonth = getFiscalYearEndMonth();
 		return getDateEndOfDay(fiscalYear, endMonth, getLastDayOfMonth(fiscalYear, endMonth))
 	}
