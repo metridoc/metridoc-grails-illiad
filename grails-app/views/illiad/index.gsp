@@ -7,10 +7,8 @@
 --%>
 
 <md:report>
-    <strong>
-        Borrowing for the Current Fiscal Year
-    </strong>
-    <hr/>
+
+    <md:header>Borrowing for the Current Fiscal Year</md:header>
 
     <div class='subReportBody'>
         <div class='subHeadRow'>Books</div>
@@ -27,10 +25,7 @@
                           isBorrowing: true]" plugin="metridoc-illiad"/>
     </div>
 
-    <strong>
-        Lending for the Current Fiscal Year
-    </strong>
-    <hr/>
+    <md:header>Lending for the Current Fiscal Year</md:header>
 
     <div class='subReportBody'>
 
