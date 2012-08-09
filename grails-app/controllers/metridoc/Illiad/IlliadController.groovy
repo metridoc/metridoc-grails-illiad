@@ -6,9 +6,6 @@ class IlliadController {
     def illiadService
 
     def index() {
-        [
-            'basicStatsData': illiadService.getBasicStatsData(null),
-            'groups': illiadService.getGroupList()
-        ]
+        illiadService.model
     }
 }

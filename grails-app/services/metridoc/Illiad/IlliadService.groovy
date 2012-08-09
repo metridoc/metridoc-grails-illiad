@@ -12,6 +12,23 @@ class IlliadService {
 
     DataSource dataSourceUnproxied_illiad
     def illiadQueriesService
+    def model = Collections.synchronizedMap([:])
+
+    synchronized getModel() {
+        if (model) return model
+        populateModel()
+
+        return model
+    }
+
+    def populateModel() {
+        def data = [
+                basicStatsData: getBasicStatsData(null),
+                groups: getGroupList()
+        ]
+
+        model.putAll(data)
+    }
 
     def getBasicStatsData(fiscalYear) {
         Sql sql = new Sql(dataSourceUnproxied_illiad);
@@ -47,10 +64,10 @@ class IlliadService {
 
         def sqlParams = [requestType, startDate, endDate];
         String queryFilled = getAdjustedQuery(genQuery,
-            ['add_condition': ' and transaction_status=\'Request Finished\'']);
+                ['add_condition': ' and transaction_status=\'Request Finished\'']);
 
         String queryExhausted = getAdjustedQuery(genQuery,
-            ['add_condition': ' and not (transaction_status<=>\'Request Finished\')']);
+                ['add_condition': ' and not (transaction_status<=>\'Request Finished\')']);
 
         profile("Running query for filledQueries (borrowing=${isBorrowing}, book=${isBooks}): " + queryFilled + " params=" + sqlParams) {
             sql.eachRow(queryFilled, sqlParams, {
