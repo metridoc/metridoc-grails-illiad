@@ -24,7 +24,7 @@ import metridoc.dsl.JobBuilder
  * Date: 3/15/12
  */
 
-includeTargets << new File("scripts/_IlliadConfig.groovy")
+includeTargets << new File("${metridocIlliadPluginDir}/scripts/_IlliadConfig.groovy")
 
 JobBuilder.isJob(this)
 
