@@ -4,30 +4,40 @@ import groovy.sql.Sql
 import metridoc.utils.DateUtil
 
 import javax.sql.DataSource
+import java.text.SimpleDateFormat
 
 class IlliadService {
 
     private static int GROUP_ID_OTHER = -2;
     private static int GROUP_ID_TOTAL = -1;
+    private static final FORMATTER = new SimpleDateFormat("yyyy-MM-dd hh:mm")
 
     DataSource dataSourceUnproxied_illiad
     def illiadQueriesService
     def model = Collections.synchronizedMap([:])
 
     synchronized getModel() {
-        if (model) return model
-        populateModel()
+        synchronized (this) {
+            if (model) return model
+            populateModel()
 
-        return model
+            return model
+        }
     }
 
     def populateModel() {
-        def data = [
-                basicStatsData: getBasicStatsData(null),
-                groups: getGroupList()
-        ]
+        synchronized (this){
+            def now = new Date()
+            def lastUpdate = FORMATTER.format(now)
 
-        model.putAll(data)
+            def data = [
+                basicStatsData: getBasicStatsData(null),
+                groups: getGroupList(),
+                lastUpdate: lastUpdate
+            ]
+
+            model.putAll(data)
+        }
     }
 
     def getBasicStatsData(fiscalYear) {

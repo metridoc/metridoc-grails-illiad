@@ -31,3 +31,7 @@ table.illiadTable th, table.illiadTable td {
     text-align: center;
 }
 
+#updateInfo {
+    float: right;
+    font-size: 10px;
+}
