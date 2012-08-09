@@ -42,6 +42,11 @@
       <sourceFolder url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-illiad/plugins/metridoc-core-0.50-SNAPSHOT/grails-app/services" isTestSource="false" />
       <sourceFolder url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-illiad/plugins/metridoc-core-0.50-SNAPSHOT/grails-app/taglib" isTestSource="false" />
     </content>
+    <content url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-illiad/plugins/quartz-1.0-RC2">
+      <sourceFolder url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-illiad/plugins/quartz-1.0-RC2/src/java" isTestSource="false" />
+      <sourceFolder url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-illiad/plugins/quartz-1.0-RC2/src/groovy" isTestSource="false" />
+      <sourceFolder url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-illiad/plugins/quartz-1.0-RC2/grails-app/services" isTestSource="false" />
+    </content>
     <content url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-illiad/plugins/release-2.0.3">
       <sourceFolder url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-illiad/plugins/release-2.0.3/src/java" isTestSource="false" />
       <sourceFolder url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-illiad/plugins/release-2.0.3/src/groovy" isTestSource="false" />
@@ -126,6 +131,8 @@
           <root url="jar://$USER_HOME$/.grails/ivy-cache/classworlds/classworlds/jars/classworlds-1.1-alpha-2.jar!/" />
           <root url="jar://$USER_HOME$/.grails/ivy-cache/ant/ant/jars/ant-1.6.5.jar!/" />
           <root url="jar://$USER_HOME$/.grails/ivy-cache/org.apache.maven/maven-ant-tasks/jars/maven-ant-tasks-2.1.0.jar!/" />
+          <root url="jar://$USER_HOME$/.grails/ivy-cache/org.quartz-scheduler/quartz/jars/quartz-1.8.4.jar!/" />
+          <root url="jar://$USER_HOME$/.grails/ivy-cache/antlr/antlr/jars/antlr-2.7.6.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
