@@ -13,9 +13,8 @@
  * permissions and limitations under the License.
  */
 
-import metridoc.targets._DataSourceLoader
-import org.springframework.util.ClassUtils
 import metridoc.dsl.JobBuilder
+import metridoc.targets._DataSourceLoader
 
 // config files can either be Java properties files or ConfigSlurper scripts
 
@@ -169,3 +168,48 @@ grails.doc.authors = "Thomas Barker, Weizhuo Wu"
 grails.doc.subtitle = " "
 
 grails.doc.title = "MetriDoc User Manual"
+
+metridoc {
+    security {
+
+        //steps: checks for custom, checks if anonymous, then does fallback
+
+        anonymous = ["illiad", "logout", "auth", "counter", "sushi", "home"]
+
+        fallback = {
+            return role("ROLE_ADMIN") //|| ipIn("<ip group name>")
+        }
+
+        custom {
+            //based on controller name
+            //counter = {.....}
+            foo = {
+                return role("ROLE_ADMIN")
+            }
+        }
+    }
+}
+
+//sets the layout for all pages
+metridoc.layout = "main"
+
+metridoc {
+    home {
+        layout {
+            //if the app exists a link will be added under the name available applications
+            availableApplications {
+                illiad = "Illiad Dashboards"
+                counter = "Counter Reports"
+                sushi = "Sushi Tester"
+                fallback = "No applications available"
+            }
+
+            administration {
+                manageUsers = "Manage Users"
+                changePassword = "Change Password"
+                jenkins = "Install Jenkins"
+                manageRoles = "Manage Roles"
+            }
+        }
+    }
+}
