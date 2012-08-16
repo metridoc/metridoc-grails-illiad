@@ -191,24 +191,26 @@ metridoc {
 }
 
 //sets the layout for all pages
-metridoc.layout = "main"
+metridoc.style.layout = "main"
 
 metridoc {
-    home {
-        layout {
-            //if the app exists a link will be added under the name available applications
-            availableApplications {
-                illiad = "Illiad Dashboards"
-                counter = "Counter Reports"
-                sushi = "Sushi Tester"
-                fallback = "No applications available"
-            }
+    style {
+        home {
+            layout {
+                //if the app exists a link will be added under the name available applications
+                availableApplications {
+                    illiad = "Illiad Dashboards"
+                    counter = "Counter Reports"
+                    sushi = "Sushi Tester"
+                    fallback = "No applications available"
+                }
 
-            administration {
-                manageUsers = "Manage Users"
-                changePassword = "Change Password"
-                jenkins = "Install Jenkins"
-                manageRoles = "Manage Roles"
+                administration {
+                    user = "Manage Users"
+                    changePassword = "Change Password"
+                    jenkins = "Install Jenkins"
+                    role = "Manage Roles"
+                }
             }
         }
     }
