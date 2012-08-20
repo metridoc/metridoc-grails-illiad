@@ -9,11 +9,66 @@
           <root url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-illiad/plugins/metridoc-core-0.51-SNAPSHOT/web-app" relative="/" />
           <root url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-illiad/plugins/metridoc-core-0.51-SNAPSHOT/grails-app/views" relative="/" />
         </webroots>
+        <sourceRoots />
       </configuration>
     </facet>
   </component>
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
+    <content url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-illiad/plugins/hibernate-2.0.4" />
+    <content url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-illiad/plugins/jquery-1.7.1">
+      <sourceFolder url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-illiad/plugins/jquery-1.7.1/src/groovy" isTestSource="false" />
+      <sourceFolder url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-illiad/plugins/jquery-1.7.1/grails-app/i18n" isTestSource="false" />
+      <sourceFolder url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-illiad/plugins/jquery-1.7.1/grails-app/services" isTestSource="false" />
+      <sourceFolder url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-illiad/plugins/jquery-1.7.1/grails-app/taglib" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-illiad/plugins/jquery-ui-1.8.15">
+      <sourceFolder url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-illiad/plugins/jquery-ui-1.8.15/grails-app/i18n" isTestSource="false" />
+      <sourceFolder url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-illiad/plugins/jquery-ui-1.8.15/grails-app/taglib" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-illiad/plugins/metridoc-core-0.51-SNAPSHOT">
+      <sourceFolder url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-illiad/plugins/metridoc-core-0.51-SNAPSHOT/src/java" isTestSource="false" />
+      <sourceFolder url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-illiad/plugins/metridoc-core-0.51-SNAPSHOT/grails-app/utils" isTestSource="false" />
+      <sourceFolder url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-illiad/plugins/metridoc-core-0.51-SNAPSHOT/src/groovy" isTestSource="false" />
+      <sourceFolder url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-illiad/plugins/metridoc-core-0.51-SNAPSHOT/grails-app/i18n" isTestSource="false" />
+      <sourceFolder url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-illiad/plugins/metridoc-core-0.51-SNAPSHOT/grails-app/realms" isTestSource="false" />
+      <sourceFolder url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-illiad/plugins/metridoc-core-0.51-SNAPSHOT/grails-app/controllers" isTestSource="false" />
+      <sourceFolder url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-illiad/plugins/metridoc-core-0.51-SNAPSHOT/grails-app/domain" isTestSource="false" />
+      <sourceFolder url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-illiad/plugins/metridoc-core-0.51-SNAPSHOT/grails-app/services" isTestSource="false" />
+      <sourceFolder url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-illiad/plugins/metridoc-core-0.51-SNAPSHOT/grails-app/taglib" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-illiad/plugins/quartz-1.0-RC2">
+      <sourceFolder url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-illiad/plugins/quartz-1.0-RC2/src/java" isTestSource="false" />
+      <sourceFolder url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-illiad/plugins/quartz-1.0-RC2/src/groovy" isTestSource="false" />
+      <sourceFolder url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-illiad/plugins/quartz-1.0-RC2/grails-app/services" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-illiad/plugins/release-2.0.3">
+      <sourceFolder url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-illiad/plugins/release-2.0.3/src/java" isTestSource="false" />
+      <sourceFolder url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-illiad/plugins/release-2.0.3/src/groovy" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-illiad/plugins/resources-1.1.6">
+      <sourceFolder url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-illiad/plugins/resources-1.1.6/src/java" isTestSource="false" />
+      <sourceFolder url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-illiad/plugins/resources-1.1.6/src/groovy" isTestSource="false" />
+      <sourceFolder url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-illiad/plugins/resources-1.1.6/grails-app/i18n" isTestSource="false" />
+      <sourceFolder url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-illiad/plugins/resources-1.1.6/grails-app/taglib" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-illiad/plugins/rest-client-builder-1.0.2">
+      <sourceFolder url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-illiad/plugins/rest-client-builder-1.0.2/src/groovy" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-illiad/plugins/shiro-1.1.3">
+      <sourceFolder url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-illiad/plugins/shiro-1.1.3/src/java" isTestSource="false" />
+      <sourceFolder url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-illiad/plugins/shiro-1.1.3/src/groovy" isTestSource="false" />
+      <sourceFolder url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-illiad/plugins/shiro-1.1.3/grails-app/i18n" isTestSource="false" />
+      <sourceFolder url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-illiad/plugins/shiro-1.1.3/grails-app/services" isTestSource="false" />
+      <sourceFolder url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-illiad/plugins/shiro-1.1.3/grails-app/taglib" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-illiad/plugins/svn-1.0.2">
+      <sourceFolder url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-illiad/plugins/svn-1.0.2/src/groovy" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-illiad/plugins/tomcat-2.0.4" />
+    <content url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-illiad/plugins/webxml-1.4.1">
+      <sourceFolder url="file://$USER_HOME$/.grails/2.0.4/projects/metridoc-illiad/plugins/webxml-1.4.1/src/groovy" isTestSource="false" />
+    </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" scope="PROVIDED" name="grails-2.0.4 (3)" level="application" />
