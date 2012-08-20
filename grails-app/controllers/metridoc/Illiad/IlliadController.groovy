@@ -6,6 +6,15 @@ class IlliadController {
     def illiadService
 
     def index() {
+        def refresh = false
+        if(params.refresh) {
+            refresh = params.refresh
+        }
+
+        if(refresh) {
+            illiadService.populateModel()
+        }
+
         illiadService.model
     }
 }

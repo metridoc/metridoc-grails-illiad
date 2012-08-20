@@ -101,6 +101,7 @@
         <jarDirectory url="file://$MODULE_DIR$/lib" recursive="false" />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="grails-2.1.0" level="application" />
     <orderEntry type="module" module-name="Metridoc-illiad-grailsPlugins" />
   </component>
 </module>
