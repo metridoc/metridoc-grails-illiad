@@ -47,12 +47,20 @@
       <library name="Grails User Library (Metridoc-illiad)">
         <CLASSES>
           <root url="file://$MODULE_DIR$/lib" />
+          <root url="jar://$USER_HOME$/.grails/ivy-cache/asm/asm-analysis/jars/asm-analysis-3.2.jar!/" />
+          <root url="jar://$USER_HOME$/.grails/ivy-cache/asm/asm-util/jars/asm-util-3.2.jar!/" />
+          <root url="jar://$USER_HOME$/.grails/ivy-cache/asm/asm-tree/jars/asm-tree-3.2.jar!/" />
+          <root url="jar://$USER_HOME$/.grails/ivy-cache/asm/asm-commons/jars/asm-commons-3.2.jar!/" />
+          <root url="jar://$USER_HOME$/.grails/ivy-cache/asm/asm/jars/asm-3.2.jar!/" />
+          <root url="jar://$USER_HOME$/.grails/ivy-cache/org.codehaus.groovy/groovy/jars/groovy-1.7-rc-2.jar!/" />
+          <root url="jar://$USER_HOME$/.grails/ivy-cache/commons-logging/commons-logging/jars/commons-logging-1.1.1.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
         <jarDirectory url="file://$MODULE_DIR$/lib" recursive="false" />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="grails-2.1.0 (2)" level="application" />
     <orderEntry type="module" module-name="Metridoc-illiad-grailsPlugins" />
   </component>
 </module>
