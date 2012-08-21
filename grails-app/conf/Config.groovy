@@ -15,6 +15,7 @@
 
 import metridoc.dsl.JobBuilder
 import metridoc.targets._DataSourceLoader
+import org.apache.shiro.SecurityUtils
 
 // config files can either be Java properties files or ConfigSlurper scripts
 
@@ -183,8 +184,14 @@ metridoc {
         custom {
             //based on controller name
             //counter = {.....}
-            foo = {
-                return role("ROLE_ADMIN")
+            profile = {
+
+                def userName = SecurityUtils.subject.principal as String
+
+                if("anonymous" == userName) {
+                    return false
+                }
+                return true
             }
         }
     }
