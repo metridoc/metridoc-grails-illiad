@@ -1,0 +1,18 @@
+Before you look at the illiad dashboard, the illiad repository needs to be populated with data.  The illiad plugins
+comes with a script that does this provided the data sources have been correctly configured.  For right now MetriDoc
+requires that migration be called directly via the command line or by other means such as Jenkins.  To run populate
+the repository from Illiad data navigate to the top folder of your MetriDoc project and run
+
+{code}
+grails -Dgrails.script.profile=true [run-illiad|http://metridoc.googlecode.com/svn/trunk/metridoc-illiad/target/docs/ref/commandline/run-illiad.html]
+{code}
+
+If everything is configured properly, Illiad data will migrate over to the destination repository.  To see the
+Illiad dashboard run
+
+{code}
+grails run-app
+{code}
+
+You should see something like:
+
