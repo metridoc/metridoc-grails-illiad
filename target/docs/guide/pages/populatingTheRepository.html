@@ -1,0 +1,117 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>1.3 Populating the Repository 0.2-SNAPSHOT</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
+    <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
+    <script type="text/javascript">
+function addJsClass() {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+</head>
+
+<body class="body" onload="addJsClass();">
+<div id="navigation">
+    <ul>
+        <li>
+            <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                <a href="../../guide/index.html" class="button">Table of contents</a>
+
+                <div id="nav-summary-childs" style="display:none;">
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/gettingStarted.html"><strong>1</strong><span>Getting Started</span></a>
+                    </div>
+                    
+                </div>
+            </div>
+        </li>
+        <li class="separator selected">
+            <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+        </li>
+    </ul>
+</div>
+<div id="header">
+    <div class="images clearfix">
+        
+        
+    </div>
+    <p> </p>
+</div>
+
+
+<table id="colset" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td id="col1">
+            <div id="main" class="corner-all">
+
+                
+
+                <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+
+                
+
+
+                <div class="project">
+                    <h1>1.3 Populating the Repository - Reference Documentation</h1>
+
+                    <p><strong>Authors:</strong> Thomas Barker, Weizhuo Wu</p>
+
+                    <p><strong>Version:</strong> 0.2-SNAPSHOT</p>
+
+                    
+                </div>
+
+                
+
+                
+
+<h2 id="populatingTheRepository">1.3 Populating the Repository</h2>
+Before you look at the illiad dashboard, the illiad repository needs to be populated with data.  The illiad plugins
+comes with a script that does this provided the data sources have been correctly configured.  For right now MetriDoc
+requires that migration be called directly via the command line or by other means such as Jenkins.  To run populate
+the repository from Illiad data navigate to the top folder of your MetriDoc project and run<p class="paragraph"/><div class="code"><pre>grails &#45;Dgrails.script.profile=<span class="java&#45;keyword">true</span> &#91;run&#45;illiad|http://metridoc.googlecode.com/svn/trunk/metridoc&#45;illiad/target/docs/ref/commandline/run&#45;illiad.html&#93;</pre></div><p class="paragraph"/>If everything is configured properly, Illiad data will migrate over to the destination repository.  To see the
+Illiad dashboard run<p class="paragraph"/><div class="code"><pre>grails run&#45;app</pre></div><p class="paragraph"/>You should see something like:<p class="paragraph"/><img border="0" class="center" src="http://metridoc.googlecode.com/svn/trunk/metridoc-illiad/src/docs/images/illiadScreenShot.png"></img><p class="paragraph"/>
+
+
+                <div style="clear:both;margin-top:15px;"></div>
+                
+                <div style="clear:both"></div>
+            </div>
+        </td>
+        <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                    <div class="menu-block"><h1 class="menu-title" onclick="toggleRef(this.parentNode.childNodes[1])">commandline</h1><div class="menu-sub">
+                        
+                            
+                            <div class="menu-item"><a href="../../ref/commandline/run-illiad.html">run-illiad</a>
+                            </div>
+                            
+                            </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div id="footer">
+    
+    
+</div>
+
+<script type="text/javascript" src="../js/docs.js"></script>
+
+</body>
+</html>
