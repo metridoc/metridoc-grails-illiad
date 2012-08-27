@@ -22,7 +22,7 @@ grails.project.dependency.resolution = {
     }
 
     plugins {
-        compile (":quartz:1.0-RC2")
+        compile ":quartz2:0.2.3"
         compile (":metridoc-core:0.51-SNAPSHOT") {
             exclude "xmlbeans"
             changing = true
