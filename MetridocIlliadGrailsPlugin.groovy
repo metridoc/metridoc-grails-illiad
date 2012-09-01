@@ -46,6 +46,11 @@ Brief summary/description of the plugin.
 
     def doWithSpring = {
         illiadQueriesService(IlliadQueriesService)
+
+        illiadSchemaRunner(SchemaRunner) {
+            schema = "schemas/illiad/illiadSchema.xml"
+            dataSource = ref("dataSource_illiad")
+        }
     }
 
     def doWithDynamicMethods = { ctx ->
