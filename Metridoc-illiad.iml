@@ -17,11 +17,6 @@
         <sourceRoots />
       </configuration>
     </facet>
-    <facet type="hibernate" name="Hibernate">
-      <configuration>
-        <datasource-map />
-      </configuration>
-    </facet>
   </component>
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
@@ -41,35 +36,16 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="grails-2.1.0 (2)" level="application" />
     <orderEntry type="module-library" exported="">
       <library name="Grails User Library (Metridoc-illiad)">
         <CLASSES>
           <root url="file://$MODULE_DIR$/lib" />
-          <root url="jar://$USER_HOME$/.grails/ivy-cache/org.quartz-scheduler/quartz/jars/quartz-2.1.5.jar!/" />
-          <root url="jar://$USER_HOME$/.grails/ivy-cache/org.codehaus.gant/gant_groovy1.8/jars/gant_groovy1.8-1.9.7.jar!/" />
-          <root url="jar://$USER_HOME$/.grails/ivy-cache/org.slf4j/slf4j-api/jars/slf4j-api-1.6.4.jar!/" />
-          <root url="jar://$USER_HOME$/.grails/ivy-cache/com.googlecode.gant-ext/gant-ext/jars/gant-ext-0.5.jar!/" />
-          <root url="jar://$USER_HOME$/.grails/ivy-cache/org.apache.camel/camel-groovy/bundles/camel-groovy-2.10.0.jar!/" />
-          <root url="jar://$USER_HOME$/.grails/ivy-cache/org.apache.poi/poi-ooxml-schemas/jars/poi-ooxml-schemas-3.8-beta3.jar!/" />
-          <root url="jar://$USER_HOME$/.grails/ivy-cache/org.apache.poi/poi-ooxml/jars/poi-ooxml-3.8-beta3.jar!/" />
-          <root url="jar://$USER_HOME$/.grails/ivy-cache/org.apache.poi/poi/jars/poi-3.8-beta3.jar!/" />
-          <root url="jar://$USER_HOME$/.grails/ivy-cache/commons-net/commons-net/jars/commons-net-3.1.jar!/" />
-          <root url="jar://$USER_HOME$/.grails/ivy-cache/com.jcraft/jsch/jars/jsch-0.1.48.jar!/" />
-          <root url="jar://$USER_HOME$/.grails/ivy-cache/org.apache.camel/camel-core/bundles/camel-core-2.10.0.jar!/" />
-          <root url="jar://$USER_HOME$/.grails/ivy-cache/org.apache.camel/camel-ftp/bundles/camel-ftp-2.10.0.jar!/" />
-          <root url="jar://$USER_HOME$/.grails/ivy-cache/javax.activation/activation/jars/activation-1.1.jar!/" />
-          <root url="jar://$USER_HOME$/.grails/ivy-cache/javax.mail/mail/jars/mail-1.4.5.jar!/" />
-          <root url="jar://$USER_HOME$/.grails/ivy-cache/net.sf.opencsv/opencsv/jars/opencsv-2.3.jar!/" />
-          <root url="jar://$USER_HOME$/.grails/ivy-cache/mysql/mysql-connector-java/jars/mysql-connector-java-5.1.20.jar!/" />
-          <root url="jar://$USER_HOME$/.grails/ivy-cache/org.liquibase/liquibase-core/jars/liquibase-core-2.0.1.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
         <jarDirectory url="file://$MODULE_DIR$/lib" recursive="false" />
       </library>
     </orderEntry>
-    <orderEntry type="module" module-name="Metridoc-illiad-grailsPlugins" />
   </component>
 </module>
 
