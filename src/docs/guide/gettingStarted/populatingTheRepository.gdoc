@@ -4,8 +4,12 @@ requires that migration be called directly via the command line or by other mean
 the repository from Illiad data navigate to the top folder of your MetriDoc project and run
 
 {code}
-grails -Dgrails.script.profile=true [run-illiad|http://metridoc.googlecode.com/svn/trunk/metridoc-illiad/target/docs/ref/commandline/run-illiad.html]
+grails -Dgrails.script.profile=true run-illiad
 {code}
+
+{note}
+More details for illiad commandline is available [here|http://metridoc.googlecode.com/svn/trunk/metridoc-illiad/target/docs/ref/commandline/run-illiad.html]
+{note}
 
 If everything is configured properly, Illiad data will migrate over to the destination repository.  To see the
 Illiad dashboard run
