@@ -74,8 +74,10 @@ function addJsClass() {
 Before you look at the illiad dashboard, the illiad repository needs to be populated with data.  The illiad plugins
 comes with a script that does this provided the data sources have been correctly configured.  For right now MetriDoc
 requires that migration be called directly via the command line or by other means such as Jenkins.  To run populate
-the repository from Illiad data navigate to the top folder of your MetriDoc project and run<p class="paragraph"/><div class="code"><pre>grails &#45;Dgrails.script.profile=<span class="java&#45;keyword">true</span> run&#45;illiad</pre></div><p class="paragraph"/><blockquote class="note">
-More details for illiad commandline is available <a href="http://metridoc.googlecode.com/svn/trunk/metridoc-illiad/target/docs/ref/commandline/run-illiad.html" target="blank">here</a>
+the repository from Illiad data navigate to the top folder of your MetriDoc project and run<p class="paragraph"/><div class="code"><pre>grails &#60;prod|dev|test&#62; &#45;Dgrails.script.profile=<span class="java&#45;keyword">true</span> run&#45;illiad</pre></div><p class="paragraph"/><code>prod</code>, <code>dev</code> and <code>test</code> correspond to production, development and testing environments.  You will notice that your
+ <code>DataSource.groovy</code> file contains switches for different environments.  For more information, please see the Grails
+data source <a href="http://grails.org/doc/latest/guide/conf.html#dataSource" target="blank">documentation</a><p class="paragraph"/><blockquote class="note">
+More details for illiad commandline are available <a href="http://metridoc.googlecode.com/svn/trunk/metridoc-illiad/target/docs/ref/commandline/run-illiad.html" target="blank">here</a>
 </blockquote><p class="paragraph"/>If everything is configured properly, Illiad data will migrate over to the destination repository.  To see the
 Illiad dashboard run<p class="paragraph"/><div class="code"><pre>grails run&#45;app</pre></div><p class="paragraph"/>You should see something like:<p class="paragraph"/><img border="0" class="center" src="http://metridoc.googlecode.com/svn/trunk/metridoc-illiad/src/docs/images/illiadScreenShot.png"></img><p class="paragraph"/>
 
