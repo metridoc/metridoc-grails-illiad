@@ -31,9 +31,11 @@ groupSqlStmt = "select distinct GroupNumber as group_no, GroupName as group_name
 
 groupLinkSqlStmt = "select distinct GroupNumber as group_no, LenderString as lender_code from GroupsLink"
 
-lenderAddrSqlStmt = "select distinct LenderString as lender_code, LibraryName as library_name, " +
-    " BillingCategory as billing_category, address1+'; '+address2+'; '+address3+'; '+address4 as address " +
-    " from LenderAddressesAll"
+if (!binding.hasVariable("lenderAddrSqlStmt")) {
+    lenderAddrSqlStmt = "select distinct LenderString as lender_code, LibraryName as library_name, " +
+        " BillingCategory as billing_category, address1+'; '+address2+'; '+address3+'; '+address4 as address " +
+        " from LenderAddressesAll"
+}
 
 referenceNumberSqlStmt = "select distinct i.TransactionNumber as transaction_number, i.OCLCNumber as oclc, " +
     " i.Type as ref_type, i.Data as ref_number from WorldCatInformation i, Transactions t " +
