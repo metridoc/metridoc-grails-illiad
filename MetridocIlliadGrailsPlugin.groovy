@@ -1,4 +1,5 @@
 import metridoc.illiad.IlliadQueriesService
+import metridoc.schema.SchemaRunner
 
 class MetridocIlliadGrailsPlugin {
     // the plugin version
