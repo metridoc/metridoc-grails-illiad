@@ -8,6 +8,8 @@ class IlliadWorkflow extends Script {
     def dataSource_from_illiad
     def dataSource_illiad
     def grailsApplication
+    def illiadWorkflowService
+    def illiadService
     Sql illiadFromSql
     Sql illiadDestinationSql
 
@@ -22,12 +24,24 @@ class IlliadWorkflow extends Script {
 
             depends(
                     createSqlClasses,
+                    cacheViewDataIfItExists,
                     clearingIlliadTables,
                     migrateData,
                     doUpdateBorrowing,
                     doUpdateLending,
                     doUpdateDemographics
             )
+            //call directly since depends only runs once
+            cacheViewDataIfItExists.call()
+        }
+
+        target(cacheViewDataIfItExists: "caches data if it exists before running") {
+            depends(createSqlClasses)
+            def total = illiadDestinationSql.firstRow("select count(*) as total from ill_group").total
+
+            if(total) {
+                illiadService.populateModel()
+            }
         }
 
         target(createSqlClasses: "creates instances of groovy.sql.Sql classes that will perform raw sql against illiad and the repository") {
@@ -46,16 +60,19 @@ class IlliadWorkflow extends Script {
 
             log.info "beginning migration from illiad to repository"
 
+            def lenderTable = illiadWorkflowService.lenderTableName
+            def userTable = illiadWorkflowService.userTableName
+
             profile("illiad full migration") {
                 [
                         ill_group: illiadConfig.groupSqlStmt,
                         ill_lender_group: illiadConfig.groupLinkSqlStmt,
-                        ill_lender_info: illiadConfig.lenderAddrSqlStmt,
+                        ill_lender_info: illiadConfig.lenderAddrSqlStmt(lenderTable),
                         ill_reference_number: illiadConfig.referenceNumberSqlStmt,
                         ill_transaction: illiadConfig.transactionSqlStmt(startDate),
                         ill_lending: illiadConfig.lendingSqlStmt(startDate),
                         ill_borrowing: illiadConfig.borrowingSqlStmt(startDate),
-                        ill_user_info: illiadConfig.userSqlStmt
+                        ill_user_info: illiadConfig.userSqlStmt(userTable)
 
                 ].each {key, value ->
                     log.info("migrating to ${key} using \n    ${value}" as String)

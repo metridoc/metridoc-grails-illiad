@@ -2,6 +2,9 @@ import groovy.sql.Sql
 import java.text.SimpleDateFormat
 import metridoc.utils.DateUtil
 
+import static org.quartz.SimpleScheduleBuilder.simpleSchedule
+import static org.quartz.CronScheduleBuilder.cronSchedule
+
 def fiscalYear = DateUtil.currentFiscalYear
 def formatter = new SimpleDateFormat('yyyyMMdd')
 def startDateAsDate = DateUtil.getFiscalYearStartDate(fiscalYear)
@@ -35,9 +38,11 @@ metridoc {
 
         groupLinkSqlStmt = "select distinct GroupNumber as group_no, LenderString as lender_code from GroupsLink"
 
-        lenderAddrSqlStmt = "select distinct LenderString as lender_code, LibraryName as library_name, " +
-                " BillingCategory as billing_category, address1+'; '+address2+'; '+address3+'; '+address4 as address " +
-                " from LenderAddressesAll"
+        lenderAddrSqlStmt = {lenderTable ->
+            "select distinct LenderString as lender_code, LibraryName as library_name, " +
+                    " BillingCategory as billing_category, address1+'; '+address2+'; '+address3+'; '+address4 as address " +
+                    " from ${lenderTable}"
+        }
 
         referenceNumberSqlStmt = "select distinct i.TransactionNumber as transaction_number, i.OCLCNumber as oclc, " +
                 " i.Type as ref_type, i.Data as ref_number from WorldCatInformation i, Transactions t " +
@@ -123,8 +128,10 @@ metridoc {
                 " set completion_date = transaction_date, completion_status = status " +
                 " where l.transaction_number = t.transaction_number and status = 'Cancelled by ILL Staff'"
 
-        userSqlStmt = "select distinct substring(sys.fn_sqlvarbasetostr(hashbytes('MD5',UserName)),3,32) as user_id, Department, nvtgc " +
-                "from UsersAll where UserName in (select UserName from Transactions)"
+        userSqlStmt = {userTable ->
+            "select distinct substring(sys.fn_sqlvarbasetostr(hashbytes('MD5',UserName)),3,32) as user_id, Department, nvtgc " +
+                    "from ${userTable} where UserName in (select UserName from Transactions)"
+        }
 
         lenderCodeStmt = "select distinct lender_code from ill_lender_group"
         locAbbrevStmt = "select id, abbrev from ill_location where length(trim(abbrev))>0"
@@ -197,6 +204,16 @@ metridoc {
                         sql.execute("update ill_lender_group set demographic = '" + states.get(x) + "' where lender_code = '" + code + "'")
                     }
                 }
+            }
+        }
+    }
+}
+
+metridoc {
+    scheduling {
+        workflows {
+            illiad {
+                schedule = cronSchedule("0 0 0 * * ?")
             }
         }
     }
