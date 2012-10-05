@@ -81,6 +81,7 @@ grails.mime.types = [html: ['text/html', 'application/xhtml+xml'],
     xls: "application/vnd.ms-excel"
 ]
 
+metridoc.app.name=appName
 // URL Mapping Cache Max Size, defaults to 5000
 //grails.urlmapping.cache.maxsize = 1000
 
