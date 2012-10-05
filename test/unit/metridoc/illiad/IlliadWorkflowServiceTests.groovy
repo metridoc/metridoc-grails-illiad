@@ -16,7 +16,7 @@ class IlliadWorkflowServiceTests {
 
     @Before
     void setupService() {
-        service.dataSource_illiad = dataSource
+        service.dataSource_from_illiad = dataSource
         sql = new Sql(dataSource)
         sql.execute("create table foo(bar int)")
     }
