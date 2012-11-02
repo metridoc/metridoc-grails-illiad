@@ -7,6 +7,9 @@ grails.project.repos.metridocRepo.url = "https://metridoc.googlecode.com/svn/plu
 grails.project.repos.default = "metridocRepo"
 
 grails.project.dependency.resolution = {
+
+
+    grails.tomcat.jvmArgs = ["-Xmx768M",  "-Xms768M",  "-XX:PermSize=512m",  "-XX:MaxPermSize=512m"]
     // inherit Grails' default dependencies
     inherits("global") {
         // uncomment to disable ehcache

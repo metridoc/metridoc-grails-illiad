@@ -13,7 +13,7 @@ class IlliadService {
     private static final FORMATTER = new SimpleDateFormat("yyyy-MM-dd hh:mm")
 
     DataSource dataSourceUnproxied_illiad
-    def illiadQueriesService
+    def illiadQueriesService = new IlliadQueriesService()
     def model = Collections.synchronizedMap([:])
 
     synchronized getModel() {
