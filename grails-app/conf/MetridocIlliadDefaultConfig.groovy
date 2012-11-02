@@ -11,15 +11,6 @@ def startDateAsDate = DateUtil.getFiscalYearStartDate(fiscalYear)
 def defaultStartDate = formatter.format(startDateAsDate)
 
 metridoc {
-    schemas {
-        illiad {
-            dataSource = "illiad"
-            schema = "schemas/illiad/illiadSchema.xml"
-        }
-    }
-}
-
-metridoc {
     illiad {
 
         startDate = defaultStartDate

@@ -1,4 +1,5 @@
 import metridoc.illiad.IlliadQueriesService
+import liquibase.integration.spring.SpringLiquibase
 
 class MetridocIlliadGrailsPlugin {
     // the plugin version
@@ -6,7 +7,7 @@ class MetridocIlliadGrailsPlugin {
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "2.0 > *"
     // the other plugins this plugin depends on
-    def dependsOn = [:]
+    def dependsOn = ["dataSource":"1.0 > *"]
     // resources that are excluded from plugin packaging
     def pluginExcludes = [
         "grails-app/views/error.gsp"
@@ -46,6 +47,19 @@ Brief summary/description of the plugin.
 
     def doWithSpring = {
         illiadQueriesService(IlliadQueriesService)
+
+        def illiadLiquibaseDisabled = application.mergedConfig.metridoc.illiad.liquibase.disabled
+        def dataSourceName = "dataSource"
+        if(application.mergedConfig.dataSource_illiad) {
+            dataSourceName = "dataSource_illiad"
+        }
+
+        if (!illiadLiquibaseDisabled) {
+            illiadLiquibase(SpringLiquibase) {
+                dataSource = ref(dataSourceName)
+                changeLog = "classpath:schemas/illiad/illiadSchema.xml"
+            }
+        }
     }
 
     def doWithDynamicMethods = { ctx ->
