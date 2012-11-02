@@ -1,4 +1,4 @@
-package metridoc.Illiad
+package metridoc.illiad
 
 import groovy.sql.Sql
 import metridoc.utils.DateUtil
