@@ -1,4 +1,4 @@
-package metridoc.Illiad
+package metridoc.illiad
 
 class IlliadController {
 
