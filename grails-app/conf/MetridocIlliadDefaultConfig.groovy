@@ -209,12 +209,4 @@ metridoc {
     }
 }
 
-metridoc {
-    scheduling {
-        workflows {
-            illiad {
-                schedule = cronSchedule("0 0 0 * * ?")
-            }
-        }
-    }
-}
+metridoc.illiad.schedule = "0 0 0 * * ?"

@@ -13,9 +13,7 @@
  * permissions and limitations under the License.
  */
 
-import metridoc.dsl.JobBuilder
-import metridoc.targets._DataSourceLoader
-import org.apache.shiro.SecurityUtils
+import org.apache.commons.lang.SystemUtils
 
 // config files can either be Java properties files or ConfigSlurper scripts
 
@@ -30,21 +28,19 @@ import org.apache.shiro.SecurityUtils
 
 def rootLoader = Thread.currentThread().contextClassLoader.rootLoader
 
-if (rootLoader) {
-    def loader = new _DataSourceLoader()
 
-    JobBuilder.isJob(loader)
-    loader.rootLoader = rootLoader
-    loader.grailsConsole = [
-        info: {String message ->
-            println message
+def driverDirectory = new File("${SystemUtils.USER_HOME}/.grails/drivers")
+if (driverDirectory.exists() && driverDirectory.isDirectory()) {
+    if (rootLoader) {
+        driverDirectory.eachFile {
+            if (it.name.endsWith(".jar")) {
+                def url = it.toURI().toURL()
+                println "adding driver ${url}"
+                rootLoader.addURL(url)
+            }
         }
-    ]
-    loader.run()
-    println "loading database drivers"
-    loader.loadDrivers()
+    }
 }
-
 
 grails.converters.default.pretty.print = true
 metridoc.home = "${userHome}/.metridoc"
@@ -66,22 +62,22 @@ grails.project.groupId = appName // change this to alter the default package nam
 grails.mime.file.extensions = true // enables the parsing of file extensions from URLs into the request format
 grails.mime.use.accept.header = false
 grails.mime.types = [html: ['text/html', 'application/xhtml+xml'],
-    xml: ['text/xml', 'application/xml'],
-    text: 'text/plain',
-    js: 'text/javascript',
-    rss: 'application/rss+xml',
-    atom: 'application/atom+xml',
-    css: 'text/css',
-    csv: 'text/csv',
-    all: '*/*',
-    json: ['application/json', 'text/json'],
-    form: 'application/x-www-form-urlencoded',
-    multipartForm: 'multipart/form-data',
-    xlsx: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-    xls: "application/vnd.ms-excel"
+        xml: ['text/xml', 'application/xml'],
+        text: 'text/plain',
+        js: 'text/javascript',
+        rss: 'application/rss+xml',
+        atom: 'application/atom+xml',
+        css: 'text/css',
+        csv: 'text/csv',
+        all: '*/*',
+        json: ['application/json', 'text/json'],
+        form: 'application/x-www-form-urlencoded',
+        multipartForm: 'multipart/form-data',
+        xlsx: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        xls: "application/vnd.ms-excel"
 ]
 
-metridoc.app.name=appName
+metridoc.app.name = appName
 // URL Mapping Cache Max Size, defaults to 5000
 //grails.urlmapping.cache.maxsize = 1000
 
@@ -134,30 +130,41 @@ log4j = {
         println "INFO: logs will be stored at ${config.metridoc.home}/logs"
 
         rollingFile name: "file",
-            maxBackupIndex: 10,
-            maxFileSize: "1MB",
-            file: "${config.metridoc.home}/logs/metridoc.log"
+                maxBackupIndex: 10,
+                maxFileSize: "1MB",
+                file: "${config.metridoc.home}/logs/metridoc.log"
 
         rollingFile name: "stacktrace",
-            maxFileSize: "1MB",
-            maxBackupIndex: 10,
-            file: "${config.metridoc.home}/logs/metridoc-stacktrace.log"
+                maxFileSize: "1MB",
+                maxBackupIndex: 10,
+                file: "${config.metridoc.home}/logs/metridoc-stacktrace.log"
     }
 
-    error 'org.codehaus.groovy.grails.web.servlet',  //  controllers
-        'org.codehaus.groovy.grails.web.pages', //  GSP
-        'org.codehaus.groovy.grails.web.sitemesh', //  layouts
-        'org.codehaus.groovy.grails.web.mapping.filter', // URL mapping
-        'org.codehaus.groovy.grails.web.mapping', // URL mapping
-        'org.codehaus.groovy.grails.commons', // core / classloading
-        'org.codehaus.groovy.grails.plugins', // plugins
-        'org.codehaus.groovy.grails.orm.hibernate', // hibernate integration
-        'org.springframework',
-        'org.hibernate',
-        'net.sf.ehcache.hibernate',
-        'org.apache'
+    error  'org.codehaus.groovy.grails.web.servlet',        // controllers
+            'org.codehaus.groovy.grails.web.pages',          // GSP
+            'org.codehaus.groovy.grails.web.sitemesh',       // layouts
+            'org.codehaus.groovy.grails.web.mapping.filter', // URL mapping
+            'org.codehaus.groovy.grails.web.mapping',        // URL mapping
+            'org.codehaus.groovy.grails.commons',            // core / classloading
+            'org.codehaus.groovy.grails.plugins',            // plugins
+            'org.codehaus.groovy.grails.orm.hibernate',      // hibernate integration
+            'org.springframework',
+            'org.hibernate',
+            'net.sf.ehcache.hibernate',
+            'metridoc.camel',
+            'org.quartz',
+            'org.apache',
+            'grails.util',
+            'grails.plugin.webxml',
+            'ShiroGrailsPlugin',
+            'net.sf.ehcache',
+            'org.codehaus.groovy.grails.scaffolding',
+            'grails.plugin.quartz2',
+            'metridoc.utils'
 
-    warn 'metridoc.camel'
+
+
+    warn 'org.grails.plugin.resource'
 
     root {
         info 'stdout', 'file'
@@ -171,55 +178,7 @@ grails.doc.subtitle = " "
 
 grails.doc.title = "Illiad User Manual"
 
-metridoc {
-    security {
-
-        //steps: checks for custom, checks if anonymous, then does fallback
-
-        anonymous = ["illiad", "logout", "auth", "counter", "sushi", "home"]
-
-        fallback = {
-            return role("ROLE_ADMIN") //|| ipIn("<ip group name>")
-        }
-
-        custom {
-            //based on controller name
-            //counter = {.....}
-            profile = {
-
-                def userName = SecurityUtils.subject.principal as String
-
-                if("anonymous" == userName) {
-                    return false
-                }
-                return true
-            }
-        }
-    }
-}
 
 //sets the layout for all pages
 metridoc.style.layout = "main"
 
-metridoc {
-    style {
-        home {
-            layout {
-                //if the app exists a link will be added under the name available applications
-                availableApplications {
-                    illiad = "Illiad Dashboards"
-                    counter = "Counter Reports"
-                    sushi = "Sushi Tester"
-                    fallback = "No applications available"
-                }
-
-                administration {
-                    user = "Manage Users"
-                    changePassword = "Change Password"
-                    jenkins = "Install Jenkins"
-                    role = "Manage Roles"
-                }
-            }
-        }
-    }
-}
