@@ -27,7 +27,6 @@ inMemoryDataSource = {
 
 allInMememoryDataSource = {
     dataSource inMemoryDataSource
-    dataSource_illiad inMemoryDataSource
     dataSource_from_illiad inMemoryDataSource
     dataSource_admin inMemoryDataSource
 }
@@ -63,17 +62,6 @@ environments {
             pooled = true
             dbCreate = "none"
             url = "jdbc:mysql://localhost:3306/admin"
-            driverClassName = "com.mysql.jdbc.Driver"
-            dialect = org.hibernate.dialect.MySQL5InnoDBDialect
-            username = "root"
-            password = "password"
-            properties(productionDataSourceProperties)
-        }
-
-        dataSource_illiad {
-            pooled = true
-            dbCreate = "none"
-            url = "jdbc:mysql://localhost:3306/illiad"
             driverClassName = "com.mysql.jdbc.Driver"
             dialect = org.hibernate.dialect.MySQL5InnoDBDialect
             username = "root"

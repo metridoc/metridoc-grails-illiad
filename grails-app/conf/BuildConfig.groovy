@@ -24,12 +24,15 @@ grails.project.dependency.resolution = {
         grailsRepo "https://metridoc.googlecode.com/svn/plugins/"
     }
 
-    plugins {
-        compile ":quartz2:0.2.3"
-        compile (":metridoc-core:0.52-SNAPSHOT") {
-            exclude "xmlbeans"
-            changing = true
+    dependencies {
+        //makes the plugin play nice with Intellij
+        build("org.tmatesoft.svnkit:svnkit:1.3.5") {
+            excludes "jna", "trilead-ssh2", "sqljet"
         }
+    }
+
+    plugins {
+        compile (":metridoc-core:0.52-SNAPSHOT")
         build(":tomcat:$grailsVersion",
             ":release:2.0.3") {
             export = false

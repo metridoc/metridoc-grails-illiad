@@ -11,13 +11,20 @@ class IlliadJob extends MetridocJob {
         cron name:  "illiad ingestor", cronExpression: scheduleUsed
     }
 
-    Sql _illiadFromSql
     Sql _illiadDestinationSql
     def dataSource_from_illiad
     def dataSource_illiad
     def illiadService
     def grailsApplication
     def illiadWorkflowService
+
+    String getIlliadDataSourceName() {
+        if (dataSource_illiad) {
+            return "dataSource_illiad"
+        }
+
+        return "dataSource"
+    }
 
     @Override
     def doExecute() {
@@ -71,9 +78,10 @@ class IlliadJob extends MetridocJob {
 
                 ].each {key, value ->
                     log.info("migrating to ${key} using \n    ${value}" as String)
+
                     profile("migration ${key}") {
                         runRoute {
-                            from("sqlplus:${value}?dataSource=dataSource_from_illiad").to("sqlplus:${key}?dataSource=dataSource_illiad")
+                            from("sqlplus:${value}?dataSource=dataSource_from_illiad").to("sqlplus:${key}?dataSource=${getIlliadDataSourceName()}")
                         }
                     }
                 }
@@ -99,16 +107,10 @@ class IlliadJob extends MetridocJob {
         }
     }
 
-    Sql getIlliadFromSql() {
-        if(_illiadFromSql) return _illiadFromSql
-
-        _illiadFromSql = new Sql(dataSource_from_illiad)
-    }
-
     Sql getIlliadDestinationSql() {
         if (_illiadDestinationSql) return _illiadDestinationSql
 
-        _illiadDestinationSql = new Sql(dataSource_illiad)
+        _illiadDestinationSql = new Sql(illiadService.illiadDataSource)
     }
 
     def prepareClosure(Closure closure) {

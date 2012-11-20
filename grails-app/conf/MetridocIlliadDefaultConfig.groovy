@@ -1,9 +1,7 @@
 import groovy.sql.Sql
-import java.text.SimpleDateFormat
 import metridoc.utils.DateUtil
 
-import static org.quartz.SimpleScheduleBuilder.simpleSchedule
-import static org.quartz.CronScheduleBuilder.cronSchedule
+import java.text.SimpleDateFormat
 
 def fiscalYear = DateUtil.currentFiscalYear
 def formatter = new SimpleDateFormat('yyyyMMdd')

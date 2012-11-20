@@ -46,11 +46,13 @@ Brief summary/description of the plugin.
     }
 
     def doWithSpring = {
+        //TODO: we should put al of these queries into the config instead
         illiadQueriesService(IlliadQueriesService)
 
         def illiadLiquibaseDisabled = application.mergedConfig.metridoc.illiad.liquibase.disabled
         def dataSourceName = "dataSource"
-        if(application.mergedConfig.dataSource_illiad) {
+        def mergedConfig = application.mergedConfig
+        if(mergedConfig.dataSource_illiad) {
             dataSourceName = "dataSource_illiad"
         }
 

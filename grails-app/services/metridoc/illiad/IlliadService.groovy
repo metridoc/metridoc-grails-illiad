@@ -13,8 +13,18 @@ class IlliadService {
     private static final FORMATTER = new SimpleDateFormat("yyyy-MM-dd hh:mm")
 
     DataSource dataSourceUnproxied_illiad
+    DataSource dataSourceUnproxied
+
     def illiadQueriesService = new IlliadQueriesService()
     def model = Collections.synchronizedMap([:])
+
+    DataSource getIlliadDataSource() {
+        if(dataSourceUnproxied_illiad) {
+            return dataSourceUnproxied_illiad
+        }
+
+        return dataSourceUnproxied
+    }
 
     synchronized getModel() {
         synchronized (this) {
@@ -41,7 +51,7 @@ class IlliadService {
     }
 
     def getBasicStatsData(fiscalYear) {
-        Sql sql = new Sql(dataSourceUnproxied_illiad);
+        Sql sql = new Sql(getIlliadDataSource());
         def result = ['books': [:], 'articles': [:]];
         def reportFiscalYear = fiscalYear != null ? fiscalYear : DateUtil.getCurrentFiscalYear();
 
@@ -150,7 +160,7 @@ class IlliadService {
     }
 
     def getGroupList() {
-        Sql sql = new Sql(dataSourceUnproxied_illiad);
+        Sql sql = new Sql(getIlliadDataSource());
         return sql.rows(illiadQueriesService.lenderGroupList, [])
     }
 

@@ -13,8 +13,8 @@ class IlliadWorkflowService {
     static final USERS = "Users"
     static final USERS_ALL = "UsersAll"
 
-    def lenderTableName
-    def userTableName
+    def _lenderTableName
+    def _userTableName
 
     def getSql() {
         if(sql) return sql
@@ -23,15 +23,15 @@ class IlliadWorkflowService {
     }
 
     def getLenderTableName() {
-        if(lenderTableName) return lenderTableName
+        if(_lenderTableName) return _lenderTableName
 
-        lenderTableName = pickTable(LENDER_ADDRESSES_ALL, LENDER_ADDRESSES)
+        _lenderTableName = pickTable(LENDER_ADDRESSES_ALL, LENDER_ADDRESSES)
     }
 
     def getUserTableName() {
-        if(userTableName) return userTableName
+        if(_userTableName) return _userTableName
 
-        userTableName = pickTable(USERS, USERS_ALL)
+        _userTableName = pickTable(USERS, USERS_ALL)
     }
 
     private pickTable(option1, option2) {
