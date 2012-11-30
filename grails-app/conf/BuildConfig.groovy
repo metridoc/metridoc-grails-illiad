@@ -9,7 +9,7 @@ grails.project.repos.default = "metridocRepo"
 grails.project.dependency.resolution = {
 
 
-    grails.tomcat.jvmArgs = ["-Xmx768M",  "-Xms768M",  "-XX:PermSize=512m",  "-XX:MaxPermSize=512m"]
+    grails.tomcat.jvmArgs = ["-Xmx768M", "-Xms768M", "-XX:PermSize=512m", "-XX:MaxPermSize=512m"]
     // inherit Grails' default dependencies
     inherits("global") {
         // uncomment to disable ehcache
@@ -32,9 +32,11 @@ grails.project.dependency.resolution = {
     }
 
     plugins {
-        compile (":metridoc-core:0.52-SNAPSHOT")
+        provided(":metridoc-core:0.52-SNAPSHOT") {
+            excludes "shiro-quartz"
+        }
         build(":tomcat:$grailsVersion",
-            ":release:2.0.3") {
+                ":release:2.0.3") {
             export = false
         }
     }
