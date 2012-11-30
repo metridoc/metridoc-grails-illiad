@@ -32,7 +32,7 @@ grails.project.dependency.resolution = {
     }
 
     plugins {
-        provided(":metridoc-core:0.52-SNAPSHOT") {
+        compile(":metridoc-core:0.52-SNAPSHOT") {
             excludes "shiro-quartz"
         }
         build(":tomcat:$grailsVersion",
