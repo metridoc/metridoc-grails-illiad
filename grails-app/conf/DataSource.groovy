@@ -28,7 +28,6 @@ inMemoryDataSource = {
 allInMememoryDataSource = {
     dataSource inMemoryDataSource
     dataSource_from_illiad inMemoryDataSource
-    dataSource_admin inMemoryDataSource
 }
 
 productionDataSourceProperties = {
@@ -51,17 +50,6 @@ environments {
             pooled = true
             dbCreate = "none"
             url = "jdbc:mysql://localhost:3306/metridoc"
-            driverClassName = "com.mysql.jdbc.Driver"
-            dialect = org.hibernate.dialect.MySQL5InnoDBDialect
-            username = "root"
-            password = "password"
-            properties(productionDataSourceProperties)
-        }
-
-        dataSource_admin {
-            pooled = true
-            dbCreate = "none"
-            url = "jdbc:mysql://localhost:3306/admin"
             driverClassName = "com.mysql.jdbc.Driver"
             dialect = org.hibernate.dialect.MySQL5InnoDBDialect
             username = "root"

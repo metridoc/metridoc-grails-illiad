@@ -18,6 +18,7 @@ grails.project.dependency.resolution = {
     log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
     repositories {
         grailsCentral()
+        mavenLocal()
         mavenCentral()
         grailsPlugins()
         grailsHome()
@@ -32,9 +33,7 @@ grails.project.dependency.resolution = {
     }
 
     plugins {
-        compile(":metridoc-core:0.52-SNAPSHOT") {
-            excludes "shiro-quartz"
-        }
+        compile(":metridoc-core:0.52.1")
         build(":tomcat:$grailsVersion",
                 ":release:2.0.3") {
             export = false

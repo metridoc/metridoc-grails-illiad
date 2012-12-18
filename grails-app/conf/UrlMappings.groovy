@@ -17,8 +17,8 @@ class UrlMappings {
 
     static mappings = {
         "/"(controller: "home", action: "index")
-        "/admin"(view: "/admin/index")
-        "/data/$action?/$projectName?/$filePath**?"(controller: "data")
+
+        "/rest/$controllerForward/$actionForward?/$id?"(controller: "rest", action: "index")
 
         "/$controller/$action?/$id?" {
             constraints {

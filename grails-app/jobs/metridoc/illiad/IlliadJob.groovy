@@ -8,7 +8,7 @@ class IlliadJob extends MetridocJob {
     static triggers = {
         def configuredSchedule = Holders.grailsApplication?.mergedConfig.metridoc.illiad.schedule
         def scheduleUsed = configuredSchedule ?: "0 0 0 * * ?"
-        cron name:  "illiad ingestor", cronExpression: scheduleUsed
+        cron name: "illiad ingestor", cronExpression: scheduleUsed
     }
 
     Sql _illiadDestinationSql
@@ -32,22 +32,20 @@ class IlliadJob extends MetridocJob {
         def startDate = illiadConfig.startDate
 
         target(default: "full illiad workflow") {
-            profile("running full illiad workflow") {
-                depends(
-                        "cacheViewDataIfItExists",
-                        "clearingIlliadTables",
-                        "migrateData",
-                        "doUpdateBorrowing",
-                        "doUpdateLending",
-                        "doUpdateDemographics"
-                )
-            }
+            depends(
+                    "cacheViewDataIfItExists",
+                    "clearingIlliadTables",
+                    "migrateData",
+                    "doUpdateBorrowing",
+                    "doUpdateLending",
+                    "doUpdateDemographics"
+            )
         }
 
         target(cacheViewDataIfItExists: "caches data if it exists before running") {
             def total = illiadDestinationSql.firstRow("select count(*) as total from ill_group").total
 
-            if(total) {
+            if (total) {
                 illiadService.populateModel()
             }
         }
@@ -58,52 +56,44 @@ class IlliadJob extends MetridocJob {
             }
         }
 
-        target(migrateData: "migrates data from illiad to local mysql instance") {
+        target(migrateData: "migrates data from illiad to repository instance") {
 
             log.info "beginning migration from illiad to repository"
 
             def lenderTable = illiadWorkflowService.lenderTableName
             def userTable = illiadWorkflowService.userTableName
 
-            profile("illiad full migration") {
-                [
-                        ill_group: illiadConfig.groupSqlStmt,
-                        ill_lender_group: illiadConfig.groupLinkSqlStmt,
-                        ill_lender_info: illiadConfig.lenderAddrSqlStmt(lenderTable),
-                        ill_reference_number: illiadConfig.referenceNumberSqlStmt,
-                        ill_transaction: illiadConfig.transactionSqlStmt(startDate),
-                        ill_lending: illiadConfig.lendingSqlStmt(startDate),
-                        ill_borrowing: illiadConfig.borrowingSqlStmt(startDate),
-                        ill_user_info: illiadConfig.userSqlStmt(userTable)
+            [
+                    ill_group: illiadConfig.groupSqlStmt,
+                    ill_lender_group: illiadConfig.groupLinkSqlStmt,
+                    ill_lender_info: illiadConfig.lenderAddrSqlStmt(lenderTable),
+                    ill_reference_number: illiadConfig.referenceNumberSqlStmt,
+                    ill_transaction: illiadConfig.transactionSqlStmt(startDate),
+                    ill_lending: illiadConfig.lendingSqlStmt(startDate),
+                    ill_borrowing: illiadConfig.borrowingSqlStmt(startDate),
+                    ill_user_info: illiadConfig.userSqlStmt(userTable)
 
-                ].each {key, value ->
-                    log.info("migrating to ${key} using \n    ${value}" as String)
+            ].each { key, value ->
+                log.info("migrating to ${key} using \n    ${value}" as String)
 
-                    profile("migration ${key}") {
-                        runRoute {
-                            from("sqlplus:${value}?dataSource=dataSource_from_illiad").to("sqlplus:${key}?dataSource=${getIlliadDataSourceName()}")
-                        }
+                profile("migration ${key}") {
+                    runRoute {
+                        from("sqlplus:${value}?dataSource=dataSource_from_illiad").to("sqlplus:${key}?dataSource=${getIlliadDataSourceName()}")
                     }
                 }
             }
         }
 
         target(doUpdateBorrowing: "updates the borrowing tables") {
-            profile("updating illiad borrowing"){
-                prepareClosure(illiadConfig.updateBorrowing).call(illiadDestinationSql, illiadConfig)
-            }
+            prepareClosure(illiadConfig.updateBorrowing).call(illiadDestinationSql, illiadConfig)
         }
 
         target(doUpdateLending: "updates lending tables in the destination data source") {
-            profile("updating illiad lending"){
-                prepareClosure(illiadConfig.updateLending).call(illiadDestinationSql, illiadConfig)
-            }
+            prepareClosure(illiadConfig.updateLending).call(illiadDestinationSql, illiadConfig)
         }
 
         target(doUpdateDemographics: "updating demographic information") {
-            profile("updating illiad demographics"){
-                prepareClosure(illiadConfig.updateDemographics).call(illiadDestinationSql, illiadConfig)
-            }
+            prepareClosure(illiadConfig.updateDemographics).call(illiadDestinationSql, illiadConfig)
         }
     }
 
