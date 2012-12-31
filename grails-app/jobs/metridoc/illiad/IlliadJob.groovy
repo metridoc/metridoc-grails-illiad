@@ -14,6 +14,7 @@ class IlliadJob extends MetridocJob {
     Sql _illiadDestinationSql
     def dataSource_from_illiad
     def dataSource_illiad
+    def dataSource
     def illiadService
     def grailsApplication
     def illiadWorkflowService
