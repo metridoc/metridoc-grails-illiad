@@ -33,7 +33,7 @@ grails.project.dependency.resolution = {
     }
 
     plugins {
-        compile(":metridoc-core:0.52.1")
+        compile(":metridoc-core:0.53-SNAPSHOT")
         build(":tomcat:$grailsVersion",
                 ":release:2.0.3") {
             export = false
