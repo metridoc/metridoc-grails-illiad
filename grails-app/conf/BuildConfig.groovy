@@ -26,8 +26,8 @@ grails.project.dependency.resolution = {
     }
 
     dependencies {
-        //makes the plugin play nice with Intellij
         compile("org.liquibase:liquibase-core:2.0.5")
+        //makes the plugin play nice with Intellij
         build("org.tmatesoft.svnkit:svnkit:1.3.5") {
             excludes "jna", "trilead-ssh2", "sqljet"
         }
