@@ -1,0 +1,4 @@
+*.sha1
+classes
+test-classes
+pom.xml

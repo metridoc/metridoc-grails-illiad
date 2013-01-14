@@ -4,3 +4,5 @@ projectFilesBackup
 *.iml
 *.zip
 *.xml
+.idea
+*.sha1
