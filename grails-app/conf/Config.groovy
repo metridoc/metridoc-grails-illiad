@@ -14,6 +14,7 @@
  */
 
 import org.apache.commons.lang.SystemUtils
+import org.slf4j.LoggerFactory
 
 // config files can either be Java properties files or ConfigSlurper scripts
 
@@ -26,8 +27,10 @@ import org.apache.commons.lang.SystemUtils
 //    grails.config.locations << "file:" + System.properties["${appName}.config.location"]
 // }
 
-def rootLoader = Thread.currentThread().contextClassLoader.rootLoader
+//for jquery
+grails.views.javascript.library = "jquery"
 
+def rootLoader = Thread.currentThread().contextClassLoader.rootLoader
 
 def driverDirectory = new File("${SystemUtils.USER_HOME}/.grails/drivers")
 if (driverDirectory.exists() && driverDirectory.isDirectory()) {
@@ -35,12 +38,13 @@ if (driverDirectory.exists() && driverDirectory.isDirectory()) {
         driverDirectory.eachFile {
             if (it.name.endsWith(".jar")) {
                 def url = it.toURI().toURL()
-                println "adding driver ${url}"
+                LoggerFactory.getLogger("config.Config").info "adding driver ${url}" as String
                 rootLoader.addURL(url)
             }
         }
     }
 }
+
 
 grails.converters.default.pretty.print = true
 metridoc.home = "${userHome}/.metridoc"
@@ -52,7 +56,9 @@ grails.config.locations = []
 if (new File("${metridoc.home}/MetridocConfig.groovy").exists()) {
     log.info "found MetridocConfig.groovy, will add to configuration"
 }
+grails.config.locations << "classpath:MetridocConfig.groovy"
 grails.config.locations << "file:${metridoc.home}/MetridocConfig.groovy"
+
 
 if (System.properties["${appName}.config.location"]) {
     grails.config.locations << "file:" + System.properties["${appName}.config.location"]
@@ -77,7 +83,6 @@ grails.mime.types = [html: ['text/html', 'application/xhtml+xml'],
         xls: "application/vnd.ms-excel"
 ]
 
-metridoc.app.name = appName
 // URL Mapping Cache Max Size, defaults to 5000
 //grails.urlmapping.cache.maxsize = 1000
 
@@ -108,6 +113,8 @@ grails.exceptionresolver.params.exclude = ['password']
 // enable query caching by default
 grails.hibernate.cache.queries = true
 
+metridoc.app.name = appName
+
 // set per-environment serverURL stem for creating absolute links
 environments {
     development {
@@ -115,6 +122,7 @@ environments {
         grails.gsp.reload.enable = true
         grails.resources.processing.enabled = true
         grails.resources.debug = true
+
     }
     production {
         grails.logging.jul.usebridge = false
@@ -127,7 +135,7 @@ log4j = {
 
     appenders {
 
-        println "INFO: logs will be stored at ${config.metridoc.home}/logs"
+
 
         rollingFile name: "file",
                 maxBackupIndex: 10,
@@ -138,36 +146,55 @@ log4j = {
                 maxFileSize: "1MB",
                 maxBackupIndex: 10,
                 file: "${config.metridoc.home}/logs/metridoc-stacktrace.log"
+
+        //not used yet... this will be where we log cli jobs
+        rollingFile name: "jobLog",
+                maxFileSize: "1MB",
+                maxBackupIndex: 10,
+                file: "${config.metridoc.home}/logs/metridoc-job.log"
     }
 
-    error  'org.codehaus.groovy.grails.web.servlet',        // controllers
-            'org.codehaus.groovy.grails.web.pages',          // GSP
-            'org.codehaus.groovy.grails.web.sitemesh',       // layouts
+    error 'org.codehaus.groovy.grails.web.servlet',  //  controllers
+            'org.codehaus.groovy.grails.web.pages', //  GSP
+            'org.codehaus.groovy.grails.web.sitemesh', //  layouts
             'org.codehaus.groovy.grails.web.mapping.filter', // URL mapping
-            'org.codehaus.groovy.grails.web.mapping',        // URL mapping
-            'org.codehaus.groovy.grails.commons',            // core / classloading
-            'org.codehaus.groovy.grails.plugins',            // plugins
-            'org.codehaus.groovy.grails.orm.hibernate',      // hibernate integration
+            'org.codehaus.groovy.grails.web.mapping', // URL mapping
+            'org.codehaus.groovy.grails.commons', // core / classloading
+            'org.codehaus.groovy.grails.plugins', // plugins
+            'org.codehaus.groovy.grails.orm.hibernate', // hibernate integration
             'org.springframework',
             'org.hibernate',
             'net.sf.ehcache.hibernate',
-            'metridoc.camel',
-            'org.quartz',
             'org.apache',
-            'grails.util',
-            'grails.plugin.webxml',
-            'ShiroGrailsPlugin',
-            'net.sf.ehcache',
-            'org.codehaus.groovy.grails.scaffolding',
+            'grails.util.GrailsUtil',
+            'org.grails.plugin.resource',
+            'grails.plugin.webxml.WebxmlGrailsPlugin',
+            'org.quartz',
             'grails.plugin.quartz2',
-            'metridoc.utils'
+            'metridoc.core.DevelopmentWorkflowRunnerService',
+            'org.codehaus.groovy.grails.web.context',
+            'net.sf.ehcache'
 
+    warn 'metridoc.camel',
+            'ShiroGrailsPlugin',
+            'org.quartz.core',
+            'org.codehaus.groovy.grails.scaffolding',
+            'metridoc.utils.CamelUtils'
 
-
-    warn 'org.grails.plugin.resource'
-
-    root {
-        info 'stdout', 'file'
+    //since it it running via commandline, it is assumed that standard out is only needed
+    if ("true" == System.getProperty("metridoc.job.cliOnly")) {
+        root {
+            info 'stdout'
+        }
+    } else {
+        if ("false" == System.getProperty("metridoc.job.loggedLogLocation", "false")) {
+            println "INFO: logs will be stored at ${config.metridoc.home}/logs"
+            //avoids duplicate logging
+            System.setProperty("metridoc.job.loggedLogLocation", "true")
+        }
+        root {
+            info 'stdout', 'file'
+        }
     }
 }
 
@@ -181,4 +208,6 @@ grails.doc.title = "Illiad User Manual"
 
 //sets the layout for all pages
 metridoc.style.layout = "main"
+
+
 
