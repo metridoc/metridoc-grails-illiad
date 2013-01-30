@@ -22,7 +22,6 @@ hibernate {
 inMemoryDataSource = {
     dbCreate = "update" // one of 'create', 'create-drop', 'update', 'validate', ''
     url = "jdbc:h2:~/.metridoc/db;MVCC=TRUE"
-    logSql = true
 }
 
 allInMememoryDataSource = {
@@ -48,7 +47,7 @@ environments {
 
         dataSource {
             pooled = true
-            dbCreate = "none"
+            dbCreate = "update"
             url = "jdbc:mysql://localhost:3306/metridoc"
             driverClassName = "com.mysql.jdbc.Driver"
             dialect = org.hibernate.dialect.MySQL5InnoDBDialect
@@ -59,7 +58,7 @@ environments {
 
         dataSource_from_illiad {
             pooled = true
-            dbCreate = "none"
+            dbCreate = "update"
             url = "jdbc:h2:mem:developmentDb;MVCC=TRUE"
             properties(productionDataSourceProperties)
         }

@@ -1,4 +1,4 @@
-<table class="illiadTable" cellspacing="0">
+<table class="illiadTable table table-striped table hover" cellspacing="0">
  <thead>
   <g:if test="${isBorrowing}">
    <tr>
@@ -28,7 +28,7 @@
 			</tbody>
 			</table>
 			<br>
-	<table class="illiadTable" cellspacing="0">
+	<table class="illiadTable table table-striped table-hover" cellspacing="0">
 	<thead>
    <tr>
      <th class="mainColHeader" rowspan="2">&nbsp;</th>
@@ -65,7 +65,7 @@
 			</tbody>
 			</table>
 			<br>
-	<table class="illiadTable" cellspacing="0">
+	<table class="illiadTable table-striped table table-hover" cellspacing="0">
 	<thead>
    <tr>
      <th class="mainColHeader">&nbsp;</th>
