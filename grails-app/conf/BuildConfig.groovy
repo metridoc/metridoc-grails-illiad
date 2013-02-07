@@ -3,7 +3,7 @@ grails.project.test.class.dir = "target/test-classes"
 grails.project.test.reports.dir = "target/test-reports"
 grails.project.target.level = 1.6
 //location of the release repository
-grails.project.repos.metridocRepo.url = new File("../maven/repository").toURI().toURL().toString()
+grails.project.repos.metridocRepo.url = "svn:https://metridoc.googlecode.com/svn/trunk/maven/repository"
 //name of the repository
 grails.project.repos.default = "metridocRepo"
 
