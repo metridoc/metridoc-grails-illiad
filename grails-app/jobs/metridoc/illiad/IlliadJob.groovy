@@ -34,9 +34,9 @@ class IlliadJob extends MetridocJob {
 
         target(default: "full illiad workflow") {
             depends(
-//                    "cacheViewDataIfItExists",
-//                    "clearingIlliadTables",
-//                    "migrateData",
+                    "cacheViewDataIfItExists",
+                    "clearingIlliadTables",
+                    "migrateData",
                     "doUpdateBorrowing",
                     "doUpdateLending",
                     "doUpdateDemographics"
