@@ -6,3 +6,4 @@ projectFilesBackup
 *.xml
 .idea
 *.sha1
+out

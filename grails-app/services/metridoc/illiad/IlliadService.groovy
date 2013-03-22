@@ -171,4 +171,8 @@ class IlliadService {
         def end = new Date().time
         log.info "Profiling: [${message}] END took ${end - start} ms"
     }
+
+    void updateBorrowing() {
+
+    }
 }

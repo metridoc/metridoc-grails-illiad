@@ -80,29 +80,31 @@ metridoc {
                     " group by h.TransactionNumber, t.RequestType"
         }
 
+        //dont think we need this anymore
         requestDateSqlStmt = "replace into ill_tracking (transaction_number, request_type, process_type, request_date) " +
                 " select transaction_number, request_type, 'Borrowing', transaction_date from ill_borrowing where " +
                 " transaction_status = 'Awaiting Request Processing'"
 
+        //dont think we need this anymore
         articleRequestDateSqlStmt = "replace into ill_tracking (transaction_number, request_type, process_type, request_date) " +
                 " select transaction_number, request_type, 'Borrowing', transaction_date from ill_borrowing where " +
                 " transaction_status = 'Awaiting Copyright Clearance'"
 
         orderDateSqlStmt = "update ill_tracking t set order_date = " +
                 " (select transaction_date from ill_borrowing l where l.transaction_number = t.transaction_number and " +
-                " transaction_status = 'Request Sent') where order_date is null"
+                " transaction_status = 'Request Sent')"
 
         shipDateSqlStmt = "update ill_tracking t set ship_date = " +
                 " (select transaction_date from ill_borrowing l where l.transaction_number = t.transaction_number and " +
-                " transaction_status = 'Shipped') where ship_date is null"
+                " transaction_status = 'Shipped')"
 
         receiveDateSqlStmt = "update ill_tracking t set receive_date = " +
                 " (select transaction_date from ill_borrowing l where l.transaction_number = t.transaction_number and " +
-                " transaction_status = 'Awaiting Post Receipt Processing') where receive_date is null"
+                " transaction_status = 'Awaiting Post Receipt Processing')"
 
         articleReceiveDateSqlStmt = "update ill_tracking t set receive_date = " +
                 " (select transaction_date from ill_borrowing l where l.transaction_number = t.transaction_number and " +
-                " transaction_status = 'Delivered to Web') where receive_date is null"
+                " transaction_status = 'Delivered to Web')"
 
         lendingSqlStmt = {startDate ->
             "select t2.TransactionNumber as transaction_number, t1.RequestType as request_type, t2.ChangedTo as status, min(t2.DateTime) as transaction_date " +
@@ -145,8 +147,6 @@ metridoc {
         //TODO: really should migrate this to an illiad service and just have the config file be dedicated to sql
         updateBorrowing = {Sql sql, config ->
             [
-                    config.requestDateSqlStmt,
-                    config.articleRequestDateSqlStmt,
                     config.orderDateSqlStmt,
                     config.shipDateSqlStmt,
                     config.receiveDateSqlStmt,

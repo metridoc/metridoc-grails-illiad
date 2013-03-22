@@ -34,9 +34,9 @@ class IlliadJob extends MetridocJob {
 
         target(default: "full illiad workflow") {
             depends(
-                    "cacheViewDataIfItExists",
-                    "clearingIlliadTables",
-                    "migrateData",
+//                    "cacheViewDataIfItExists",
+//                    "clearingIlliadTables",
+//                    "migrateData",
                     "doUpdateBorrowing",
                     "doUpdateLending",
                     "doUpdateDemographics"
@@ -86,6 +86,7 @@ class IlliadJob extends MetridocJob {
         }
 
         target(doUpdateBorrowing: "updates the borrowing tables") {
+            IllTracking.updateFromIllBorrowing()
             prepareClosure(illiadConfig.updateBorrowing).call(illiadDestinationSql, illiadConfig)
         }
 

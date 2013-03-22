@@ -55,13 +55,6 @@ Brief summary/description of the plugin.
         if(mergedConfig.dataSource_illiad) {
             dataSourceName = "dataSource_illiad"
         }
-
-        if (!illiadLiquibaseDisabled) {
-            illiadLiquibase(SpringLiquibase) {
-                dataSource = ref(dataSourceName)
-                changeLog = "classpath:schemas/illiad/illiadSchema.xml"
-            }
-        }
     }
 
     def doWithDynamicMethods = { ctx ->
