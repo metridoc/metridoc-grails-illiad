@@ -18,7 +18,6 @@ import static metridoc.illiad.IllBorrowing.REQUEST_SENT
 @Mock([IllBorrowing, IllTracking])
 class IllTrackingTests {
 
-    @Before
     void addAwaitingRequestProcessingToBorrowing() {
         (1..10).each {
             def borrowing = new IllBorrowing()
@@ -41,6 +40,7 @@ class IllTrackingTests {
 
     @Test
     void "test updating IllTransaction with Awaiting Request Processing"() {
+        addAwaitingRequestProcessingToBorrowing()
         IllTracking.updateFromIllBorrowing_AwaitingCopyrightClearance()
         IllTracking.updateFromIllBorrowing_AwaitingRequestProcessing()
 
@@ -50,6 +50,7 @@ class IllTrackingTests {
 
     @Test
     void "test updating IllTransaction with Awaiting CopyrightClearance"() {
+        addAwaitingRequestProcessingToBorrowing()
         IllTracking.updateFromIllBorrowing_AwaitingCopyrightClearance()
 
         def list = IllTracking.list()
