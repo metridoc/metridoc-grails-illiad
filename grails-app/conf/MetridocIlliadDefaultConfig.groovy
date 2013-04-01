@@ -14,7 +14,7 @@ metridoc {
         startDate = defaultStartDate
 
         //TODO: really should migrate this to an illiad service and just have the config file be dedicated to sql
-        truncateIlliadTablesInRepository = {Sql sql ->
+        truncateIlliadTablesInRepository = { Sql sql ->
             [
                     "ill_group",
                     "ill_lending",
@@ -36,7 +36,7 @@ metridoc {
 
         groupLinkSqlStmt = "select distinct GroupNumber as group_no, LenderString as lender_code from GroupsLink"
 
-        lenderAddrSqlStmt = {lenderTable ->
+        lenderAddrSqlStmt = { lenderTable ->
             "select distinct LenderString as lender_code, LibraryName as library_name, " +
                     " BillingCategory as billing_category, address1+'; '+address2+'; '+address3+'; '+address4 as address " +
                     " from ${lenderTable}"
@@ -46,7 +46,7 @@ metridoc {
                 " i.Type as ref_type, i.Data as ref_number from WorldCatInformation i, Transactions t " +
                 " where t.TransactionNumber = i.TransactionNumber and t.TransactionStatus in ('Request Finished','Cancelled by ILL Staff')"
 
-        transactionSqlStmt = {startDate ->
+        transactionSqlStmt = { startDate ->
             "select TransactionNumber as transaction_number, " +
                     " SUBSTRING(sys.fn_sqlvarbasetostr(HASHBYTES('MD5',UserName)),3,32) as user_id, RequestType as request_type, " +
                     " LoanAuthor as loan_author, LoanTitle as loan_title, LoanPublisher as loan_publisher, LoanPlace as loan_location, " +
@@ -63,7 +63,7 @@ metridoc {
         }
 
 
-        borrowingSqlStmt = {startDate ->
+        borrowingSqlStmt = { startDate ->
             "select t2.TransactionNumber as transaction_number, t1.RequestType as request_type, " +
                     " t2.ChangedTo as transaction_status, min(t2.DateTime) as transaction_date " +
                     " from Transactions t1 join Tracking t2 on t2.TransactionNumber=t1.TransactionNumber " +
@@ -80,12 +80,12 @@ metridoc {
                     " group by h.TransactionNumber, t.RequestType"
         }
 
-        //dont think we need this anymore
+        //TODO: dont think we need this anymore
         requestDateSqlStmt = "replace into ill_tracking (transaction_number, request_type, process_type, request_date) " +
                 " select transaction_number, request_type, 'Borrowing', transaction_date from ill_borrowing where " +
                 " transaction_status = 'Awaiting Request Processing'"
 
-        //dont think we need this anymore
+        //TODO: dont think we need this anymore
         articleRequestDateSqlStmt = "replace into ill_tracking (transaction_number, request_type, process_type, request_date) " +
                 " select transaction_number, request_type, 'Borrowing', transaction_date from ill_borrowing where " +
                 " transaction_status = 'Awaiting Copyright Clearance'"
@@ -106,7 +106,7 @@ metridoc {
                 " (select transaction_date from ill_borrowing l where l.transaction_number = t.transaction_number and " +
                 " transaction_status = 'Delivered to Web')"
 
-        lendingSqlStmt = {startDate ->
+        lendingSqlStmt = { startDate ->
             "select t2.TransactionNumber as transaction_number, t1.RequestType as request_type, t2.ChangedTo as status, min(t2.DateTime) as transaction_date " +
                     " from Transactions t1 join Tracking t2 on t2.TransactionNumber = t1.TransactionNumber and t1.ProcessType = 'Lending' " +
                     " where convert(varchar(11), t1.TransactionDate, 112) >= '${startDate}' and " +
@@ -128,7 +128,7 @@ metridoc {
                 " set completion_date = transaction_date, completion_status = status " +
                 " where l.transaction_number = t.transaction_number and status = 'Cancelled by ILL Staff'"
 
-        userSqlStmt = {userTable ->
+        userSqlStmt = { userTable ->
             "select distinct substring(sys.fn_sqlvarbasetostr(hashbytes('MD5',UserName)),3,32) as user_id, Department, nvtgc " +
                     "from ${userTable} where UserName in (select UserName from Transactions)"
         }
@@ -138,14 +138,14 @@ metridoc {
         locationStmt = "select id, upper(location) as loc from ill_location"
 
         //TODO: really should migrate this to an illiad service and just have the config file be dedicated to sql
-        doSqlCall = {String type, String sqlStatement, Sql sql ->
-            profile("update $type with sql statement $sqlStatement"){
+        doSqlCall = { String type, String sqlStatement, Sql sql ->
+            profile("update $type with sql statement $sqlStatement") {
                 sql.execute(sqlStatement)
             }
         }
 
         //TODO: really should migrate this to an illiad service and just have the config file be dedicated to sql
-        updateBorrowing = {Sql sql, config ->
+        updateBorrowing = { Sql sql, config ->
             [
                     config.orderDateSqlStmt,
                     config.shipDateSqlStmt,
@@ -157,7 +157,7 @@ metridoc {
         }
 
         //TODO: really should migrate this to an illiad service and just have the config file be dedicated to sql
-        updateLending = {Sql sql, config ->
+        updateLending = { Sql sql, config ->
 
             [
                     config.arrivalDateSqlStmt,
@@ -169,11 +169,11 @@ metridoc {
         }
 
         //TODO: really should migrate this to an illiad service and just have the config file be dedicated to sql
-        updateDemographics = {Sql sql, config ->
+        updateDemographics = { Sql sql, config ->
             def states = [:]
             def locations = [:]
 
-            def loadData = {String type, String sqlStatement, String item, Map data ->
+            def loadData = { String type, String sqlStatement, String item, Map data ->
                 log.info("loading ${type} for processing using" as String)
                 log.info("    ${sqlStatement}" as String)
                 sql.eachRow(config.locAbbrevStmt) { data[it."${item}"] = it.id }

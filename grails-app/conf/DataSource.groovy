@@ -13,54 +13,83 @@
  * permissions and limitations under the License.
  */
 
+dataSource {
+    pooled = true
+    driverClassName = "org.h2.Driver"
+    username = "sa"
+    password = ""
+}
 hibernate {
     cache.use_second_level_cache = true
     cache.use_query_cache = false
     cache.region.factory_class = 'net.sf.ehcache.hibernate.EhCacheRegionFactory'
 }
-
-inMemoryDataSource = {
-    dbCreate = "update" // one of 'create', 'create-drop', 'update', 'validate', ''
-    url = "jdbc:h2:~/.metridoc/db;MVCC=TRUE"
-}
-
-allInMememoryDataSource = {
-    dataSource inMemoryDataSource
-    dataSource_from_illiad inMemoryDataSource
-}
-
-productionDataSourceProperties = {
-    maxActive = 50
-    maxIdle = 25
-    minIdle = 5
-    initialSize = 5
-    minEvictableIdleTimeMillis = 60000
-    timeBetweenEvictionRunsMillis = 60000
-    maxWait = 10000
-    validationQuery = "select 1"
-}
-
+// environment specific settings
 environments {
-    development allInMememoryDataSource
-    test allInMememoryDataSource
-    production {
-
+    development {
         dataSource {
-            pooled = true
-            dbCreate = "update"
-            url = "jdbc:mysql://localhost:3306/metridoc"
-            driverClassName = "com.mysql.jdbc.Driver"
-            dialect = org.hibernate.dialect.MySQL5InnoDBDialect
-            username = "root"
-            password = "password"
-            properties(productionDataSourceProperties)
+            dbCreate = "create-drop" // one of 'create', 'create-drop', 'update', 'validate', ''
+            url = "jdbc:h2:mem:devDb;MVCC=TRUE;LOCK_TIMEOUT=10000"
         }
-
-        dataSource_from_illiad {
-            pooled = true
+    }
+    test {
+        dataSource {
             dbCreate = "update"
-            url = "jdbc:h2:mem:developmentDb;MVCC=TRUE"
-            properties(productionDataSourceProperties)
+            url = "jdbc:h2:mem:testDb;MVCC=TRUE;LOCK_TIMEOUT=10000"
+        }
+    }
+    production {
+        dataSource {
+            dbCreate = "update"
+            url = "jdbc:h2:prodDb;MVCC=TRUE;LOCK_TIMEOUT=10000"
+            pooled = true
+            properties {
+                maxActive = -1
+                minEvictableIdleTimeMillis = 1800000
+                timeBetweenEvictionRunsMillis = 1800000
+                numTestsPerEvictionRun = 3
+                testOnBorrow = true
+                testWhileIdle = true
+                testOnReturn = true
+                validationQuery = "SELECT 1"
+            }
         }
     }
 }
+
+//this should be set to use the mssql instance
+dataSource_from_illiad {
+    pooled = true
+    dbCreate = "update"
+    url = "jdbc:h2:mem:developmentDb;MVCC=TRUE"
+    properties {
+        maxActive = -1
+        minEvictableIdleTimeMillis = 1800000
+        timeBetweenEvictionRunsMillis = 1800000
+        numTestsPerEvictionRun = 3
+        testOnBorrow = true
+        testWhileIdle = true
+        testOnReturn = true
+        validationQuery = "SELECT 1"
+    }
+}
+
+//example of setting it to msssql
+//dataSource_from_illiad {
+//    pooled = true
+//    driverClassName = "com.microsoft.sqlserver.jdbc.SQLServerDriver"
+//    dbCreate = "none"
+//    username = "metridoc"
+//    password = "password"
+//    url = "jdbc:sqlserver://172.16.116.120:1433;databaseName=ILLData"
+//    properties {
+//      maxActive = -1
+//      minEvictableIdleTimeMillis=1800000
+//      timeBetweenEvictionRunsMillis=1800000
+//      numTestsPerEvictionRun=3
+//      testOnBorrow=true
+//      testWhileIdle=true
+//      testOnReturn=true
+//      validationQuery="SELECT 1"
+//  }
+//}

@@ -1,8 +1,8 @@
 package metridoc.illiad
 
-import metridoc.core.MetridocJob
 import grails.util.Holders
 import groovy.sql.Sql
+import metridoc.core.MetridocJob
 
 class IlliadJob extends MetridocJob {
     static triggers = {
@@ -18,14 +18,6 @@ class IlliadJob extends MetridocJob {
     def illiadService
     def grailsApplication
     def illiadWorkflowService
-
-    String getIlliadDataSourceName() {
-        if (dataSource_illiad) {
-            return "dataSource_illiad"
-        }
-
-        return "dataSource"
-    }
 
     @Override
     def doExecute() {
@@ -79,7 +71,7 @@ class IlliadJob extends MetridocJob {
 
                 profile("migration ${key}") {
                     runRoute {
-                        from("sqlplus:${value}?dataSource=dataSource_from_illiad").to("sqlplus:${key}?dataSource=${getIlliadDataSourceName()}")
+                        from("sqlplus:${value}?dataSource=dataSource_from_illiad").to("sqlplus:${key}?dataSource=dataSource")
                     }
                 }
             }

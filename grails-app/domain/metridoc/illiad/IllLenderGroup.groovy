@@ -13,7 +13,6 @@ class IllLenderGroup {
     Integer demographic
 
     static mapping = {
-        id(generator: "native")
         version(defaultValue: '0')
         lenderCode(index: "idx_ill_lender_group_lender_code")
     }
