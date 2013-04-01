@@ -115,7 +115,7 @@ metridoc {
                     " group by t2.TransactionNumber, t1.RequestType, t2.ChangedTo"
         }
 
-        arrivalDateSqlStmt = "replace into ill_lending_tracking (transaction_number, request_type, arrival_date) " +
+        arrivalDateSqlStmt = "insert into ill_lending_tracking (transaction_number, request_type, arrival_date) " +
                 " select transaction_number, request_type, transaction_date " +
                 " from ill_lending where status = 'Awaiting Lending Request Processing'"
 

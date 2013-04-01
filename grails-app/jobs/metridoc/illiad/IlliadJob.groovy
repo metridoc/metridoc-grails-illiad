@@ -23,13 +23,20 @@ class IlliadJob extends MetridocJob {
     def doExecute() {
         def illiadConfig = grailsApplication.mergedConfig.metridoc.illiad
         def startDate = illiadConfig.startDate
+        def tool = new IlliadTool()
+        tool.dataSource = dataSource
+        tool.dataSource_from_illiad = dataSource_from_illiad
+        tool.binding = binding
 
         target(default: "full illiad workflow") {
+//            depends("cacheViewDataIfItExists")
+            //TODO: need to change this to run once we are done
+            tool.doRun()
             depends(
-                    "cacheViewDataIfItExists",
-                    "clearingIlliadTables",
-                    "migrateData",
-                    "doUpdateBorrowing",
+//                    "cacheViewDataIfItExists",
+//                    "clearingIlliadTables",
+//                    "migrateData",
+//                    "doUpdateBorrowing",
                     "doUpdateLending",
                     "doUpdateDemographics"
             )
@@ -44,9 +51,7 @@ class IlliadJob extends MetridocJob {
         }
 
         target(clearingIlliadTables: "truncates all tables") {
-            profile("truncating illiad tables") {
-                prepareClosure(illiadConfig.truncateIlliadTablesInRepository).call(illiadDestinationSql)
-            }
+            tool.doRun()
         }
 
         target(migrateData: "migrates data from illiad to repository instance") {

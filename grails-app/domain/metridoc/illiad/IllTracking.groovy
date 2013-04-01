@@ -1,9 +1,6 @@
 package metridoc.illiad
 
-import groovy.sql.Sql
-import org.hibernate.Session
 import org.slf4j.LoggerFactory
-import org.springframework.orm.hibernate3.SessionFactoryUtils
 
 import static metridoc.illiad.IllBorrowing.AWAITING_COPYRIGHT_CLEARANCE
 import static metridoc.illiad.IllBorrowing.AWAITING_REQUEST_PROCESSING
@@ -41,7 +38,7 @@ class IllTracking {
 
     static updateFromIllBorrowing_AwaitingRequestProcessing() {
         Set<Long> alreadyProcessedTransactions
-        //need to do a new one since this method might already be surrounded by a trnsaction
+        //need to do a new one since this method might already be surrounded by a transaction
         IllTracking.withNewTransaction{
             alreadyProcessedTransactions = IllTracking.list().collect { it.transactionNumber } as Set
         }

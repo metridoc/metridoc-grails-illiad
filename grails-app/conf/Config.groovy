@@ -131,12 +131,10 @@ environments {
 }
 
 // log4j configuration
+//TEMPLATE_LOG_4J
 log4j = {
 
     appenders {
-
-
-
         rollingFile name: "file",
                 maxBackupIndex: 10,
                 maxFileSize: "1MB",
@@ -154,32 +152,21 @@ log4j = {
                 file: "${config.metridoc.home}/logs/metridoc-job.log"
     }
 
-    error 'org.codehaus.groovy.grails.web.servlet',  //  controllers
-            'org.codehaus.groovy.grails.web.pages', //  GSP
-            'org.codehaus.groovy.grails.web.sitemesh', //  layouts
-            'org.codehaus.groovy.grails.web.mapping.filter', // URL mapping
-            'org.codehaus.groovy.grails.web.mapping', // URL mapping
-            'org.codehaus.groovy.grails.commons', // core / classloading
-            'org.codehaus.groovy.grails.plugins', // plugins
-            'org.codehaus.groovy.grails.orm.hibernate', // hibernate integration
+
+    error  'org.codehaus.groovy',
+            'grails.app.resourceMappers',
             'org.springframework',
             'org.hibernate',
             'net.sf.ehcache.hibernate',
-            'org.apache',
-            'grails.util.GrailsUtil',
-            'org.grails.plugin.resource',
-            'grails.plugin.webxml.WebxmlGrailsPlugin',
+            'metridoc.camel',
+            'metridoc.test.NeverRunJob',
+            'grails.plugin',
+            'org.grails',
             'org.quartz',
-            'grails.plugin.quartz2',
-            'metridoc.core.DevelopmentWorkflowRunnerService',
-            'org.codehaus.groovy.grails.web.context',
-            'net.sf.ehcache'
-
-    warn 'metridoc.camel',
             'ShiroGrailsPlugin',
-            'org.quartz.core',
-            'org.codehaus.groovy.grails.scaffolding',
-            'metridoc.utils.CamelUtils'
+            'grails.util',
+            'org.grails.plugin.resource.BundleResourceMapper'
+
 
     //since it it running via commandline, it is assumed that standard out is only needed
     if ("true" == System.getProperty("metridoc.job.cliOnly")) {
@@ -197,7 +184,7 @@ log4j = {
         }
     }
 }
-
+//TEMPLATE_LOG_4J
 //change the document parameters if creating a user manual for a plugin
 grails.doc.authors = "Thomas Barker, Weizhuo Wu"
 
