@@ -79,3 +79,15 @@ articleReceiveDateSqlStmt = "update ill_tracking t set receive_date = " +
         " (select transaction_date from ill_borrowing l where l.transaction_number = t.transaction_number and " +
         " transaction_status = 'Delivered to Web')"
 
+arrivalDateSqlStmt = "insert into ill_lending_tracking (transaction_number, request_type, arrival_date) " +
+        " select transaction_number, request_type, transaction_date " +
+        " from ill_lending where status = 'Awaiting Lending Request Processing'"
+
+completionSqlStmt = "update ill_lending_tracking t, ill_lending l " +
+        " set completion_date = transaction_date, completion_status = status " +
+        " where l.transaction_number = t.transaction_number and status " +
+        " not in ('Awaiting Lending Request Processing','Cancelled by ILL Staff')"
+
+cancelledSqlStmt = "update ill_lending_tracking t, ill_lending l " +
+        " set completion_date = transaction_date, completion_status = status " +
+        " where l.transaction_number = t.transaction_number and status = 'Cancelled by ILL Staff'"

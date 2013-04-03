@@ -8,8 +8,8 @@ import java.text.SimpleDateFormat
 
 class IlliadService {
 
-    private static int GROUP_ID_OTHER = -2;
-    private static int GROUP_ID_TOTAL = -1;
+    static final int GROUP_ID_OTHER = -2;
+    static final int GROUP_ID_TOTAL = -1;
     private static final FORMATTER = new SimpleDateFormat("yyyy-MM-dd hh:mm")
 
     DataSource dataSourceUnproxied_illiad

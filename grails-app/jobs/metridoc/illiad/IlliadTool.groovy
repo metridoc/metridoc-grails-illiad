@@ -26,6 +26,7 @@ class IlliadTool extends RunnableTool {
     static final LENDER_ADDRESSES = "LenderAddresses"
     static final USERS = "Users"
     static final USERS_ALL = "UsersAll"
+    public static final String OTHER = 'Other'
 
     def _lenderTableName
     def _userTableName
@@ -35,7 +36,7 @@ class IlliadTool extends RunnableTool {
     Sql fromIlliadSql
     DataSource dataSource
     DataSource dataSource_from_illiad
-    List<Class<Script>> targetClasses = [IlliadTargets]
+    List<Class<Script>> targetClasses = []
     Script illiadSqlStatements
 
     @Override
@@ -77,9 +78,49 @@ class IlliadTool extends RunnableTool {
         addClearingTablesTarget()
         addMigrateDataTarget()
         addBorrowingUpdate()
+        addLendingUpdate()
+        addIllGroupOtherInsert()
+        addCleanUpIllTransactionLendingLibraries()
+
         use(MetridocScript) {
             binding.target(default: "runs illiad workflow") {
-                depends("clearingIlliadTables", "migrateData", "doUpdateBorrowing")
+                depends("clearingIlliadTables", "migrateData", "doUpdateBorrowing", "doUpdateLending", "doIllGroupOtherInsert", "cleanUpIllTransactionLendingLibraries")
+            }
+        }
+    }
+
+    void addCleanUpIllTransactionLendingLibraries() {
+        use(MetridocScript){
+            binding.target(cleanUpIllTransactionLendingLibraries: "cleans up data in ill_transaction to facilitate agnostic sql queries in the dashboard"){
+                getSql().execute("update ill_transaction set lending_library = 'Other' where lending_library is null")
+                getSql().execute("update ill_transaction set lending_library = 'Other' where lending_library not in (select distinct lender_code from ill_lender_group)")
+            }
+        }
+    }
+
+    void addIllGroupOtherInsert() {
+        use(MetridocScript){
+            binding.target(doIllGroupOtherInsert: "inserts extra records into ill_group to deal with 'OTHER'"){
+                IllGroup.withNewTransaction {
+                    new IllGroup(groupNo: IlliadService.GROUP_ID_OTHER, groupName: OTHER).save(failOnError: true)
+                    new IllLenderGroup(groupNo: IlliadService.GROUP_ID_OTHER, lenderCode: OTHER).save(failOnError: true)
+                }
+            }
+        }
+    }
+
+    void addLendingUpdate() {
+        use(MetridocScript){
+            binding.target(doUpdateLending: "updates the lending table"){
+                [
+                        getIlliadSqlStatements().orderDateSqlStmt,
+                        getIlliadSqlStatements().shipDateSqlStmt,
+                        getIlliadSqlStatements().receiveDateSqlStmt,
+                        getIlliadSqlStatements().articleReceiveDateSqlStmt
+                ].each {
+                    log.info "updating lending with sql statement $it"
+                    getSql().execute(it as String)
+                }
             }
         }
     }
@@ -95,7 +136,7 @@ class IlliadTool extends RunnableTool {
                         getIlliadSqlStatements().articleReceiveDateSqlStmt
                 ].each {
                     log.info "update borrowing with sql statement $it"
-                    sql.execute(it as String)
+                    getSql().execute(it as String)
                 }
             }
         }
@@ -113,9 +154,9 @@ class IlliadTool extends RunnableTool {
                         ill_lender_group: getIlliadSqlStatements().groupLinkSqlStmt,
                         ill_lender_info: getIlliadSqlStatements().lenderAddrSqlStmt(lenderTableName),
                         ill_reference_number: getIlliadSqlStatements().referenceNumberSqlStmt,
-                        ill_transaction: getIlliadSqlStatements().transactionSqlStmt(startDate),
-                        ill_lending: getIlliadSqlStatements().lendingSqlStmt(startDate),
-                        ill_borrowing: getIlliadSqlStatements().borrowingSqlStmt(startDate),
+                        ill_transaction: getIlliadSqlStatements().transactionSqlStmt(getStartDate()()),
+                        ill_lending: getIlliadSqlStatements().lendingSqlStmt(getStartDate()()),
+                        ill_borrowing: getIlliadSqlStatements().borrowingSqlStmt(getStartDate()()),
                         ill_user_info: getIlliadSqlStatements().userSqlStmt(userTableName)
 
                 ].each { key, value ->

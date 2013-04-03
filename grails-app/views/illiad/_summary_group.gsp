@@ -88,10 +88,10 @@
 			groupName: group.group_name,
 			isBorrowing:isBorrowing]" />
 </g:each>
-<g:set var="currentDataMap" value="${summaryData.get(-2) != null ? summaryData.get(-2):[:]}" />
-   <g:render template="/illiad/summary_row"
-	model="[currentDataMap:currentDataMap,
-			index:groups.size()+1,
-			groupName: 'Other',
-			isBorrowing: isBorrowing]" />
+%{--<g:set var="currentDataMap" value="${summaryData.get(-2) != null ? summaryData.get(-2):[:]}" />--}%
+   %{--<g:render template="/illiad/summary_row"--}%
+	%{--model="[currentDataMap:currentDataMap,--}%
+			%{--index:groups.size()+1,--}%
+			%{--groupName: 'Other',--}%
+			%{--isBorrowing: isBorrowing]" />--}%
    </tbody></table>

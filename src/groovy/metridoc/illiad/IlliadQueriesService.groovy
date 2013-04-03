@@ -3,8 +3,7 @@ package metridoc.illiad
 class IlliadQueriesService {
 
     def transactionCountsBorrowing = '''
-                    select IFNULL(lg.group_no,-2) as group_no,
-                    IFNULL(g.group_name,'Other') group_name,
+                    select lg.group_no, g.group_name,
                     count(distinct t.transaction_number) transNum,
                     IFNULL(sum(billing_amount), 0) as sumFees
                     from ill_transaction t
@@ -16,7 +15,7 @@ class IlliadQueriesService {
     		'''
 
     def transactionTurnaroundsBorrowing = '''
-                    select IFNULL(lg.group_no,-2) as group_no,
+                    select lg.group_no,
                     AVG(DATEDIFF(receive_date, ship_date)) as turnaroundShpRec,
                     AVG(DATEDIFF(ship_date, request_date))as turnaroundReqShp,
                     AVG(DATEDIFF(receive_date, request_date)) as turnaroundReqRec
@@ -30,8 +29,7 @@ class IlliadQueriesService {
     		'''
 
     def transactionCountsLending = '''
-                    select IFNULL(lg.group_no,-2) as group_no,
-                    IFNULL(g.group_name,'Other') group_name,
+                    select lg.group_no, g.group_name,
                     count(distinct t.transaction_number) transNum,
                     IFNULL(sum(billing_amount), 0) as sumFees
                     from ill_transaction t
@@ -44,7 +42,7 @@ class IlliadQueriesService {
 
 
     def transactionTurnaroundsLending = '''
-                    select IFNULL(lg.group_no,-2) as group_no,
+                    select lg.group_no,
                     AVG(DATEDIFF(lt.completion_date, lt.arrival_date)) as turnaround
                     from ill_transaction t
                         left join ill_lender_group lg on t.lending_library=lg.lender_code

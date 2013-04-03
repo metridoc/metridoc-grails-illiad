@@ -1,7 +1,5 @@
 package metridoc.illiad
 
-import java.sql.Timestamp
-
 class IllTransaction {
 
     Long userName
@@ -40,6 +38,7 @@ class IllTransaction {
 
     static mapping = {
         version(defaultValue: '0')
+        lendingLibrary(defaultValue: IlliadTool.OTHER)
         transactionDate(index: "idx_ill_transaction_transaction_date")
     }
 
@@ -67,7 +66,6 @@ class IllTransaction {
         issn(nullable: true)
         espNumber(nullable: true)
         lenderCodes(nullable: true)
-        lendingLibrary(nullable: true)
         reasonForCancellation(nullable: true)
         callNumber(nullable: true)
         location(nullable: true)
