@@ -154,9 +154,9 @@ class IlliadTool extends RunnableTool {
                         ill_lender_group: getIlliadSqlStatements().groupLinkSqlStmt,
                         ill_lender_info: getIlliadSqlStatements().lenderAddrSqlStmt(lenderTableName),
                         ill_reference_number: getIlliadSqlStatements().referenceNumberSqlStmt,
-                        ill_transaction: getIlliadSqlStatements().transactionSqlStmt(getStartDate()()),
-                        ill_lending: getIlliadSqlStatements().lendingSqlStmt(getStartDate()()),
-                        ill_borrowing: getIlliadSqlStatements().borrowingSqlStmt(getStartDate()()),
+                        ill_transaction: getIlliadSqlStatements().transactionSqlStmt(getStartDate()),
+                        ill_lending: getIlliadSqlStatements().lendingSqlStmt(getStartDate()),
+                        ill_borrowing: getIlliadSqlStatements().borrowingSqlStmt(getStartDate()),
                         ill_user_info: getIlliadSqlStatements().userSqlStmt(userTableName)
 
                 ].each { key, value ->
