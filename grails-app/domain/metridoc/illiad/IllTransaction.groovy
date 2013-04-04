@@ -38,12 +38,12 @@ class IllTransaction {
 
     static mapping = {
         version(defaultValue: '0')
-        lendingLibrary(defaultValue: IlliadTool.OTHER)
         transactionDate(index: "idx_ill_transaction_transaction_date")
     }
 
     static constraints = {
         transactionNumber(unique: true)
+        lendingLibrary(nullable: true)
         userName(nullable: true)
         requestType(nullable: true)
         loanAuthor(nullable: true)

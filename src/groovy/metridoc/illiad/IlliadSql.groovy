@@ -65,19 +65,19 @@ userSqlStmt = {String userTableName ->
 
 orderDateSqlStmt = "update ill_tracking t set order_date = " +
         " (select transaction_date from ill_borrowing l where l.transaction_number = t.transaction_number and " +
-        " transaction_status = 'Request Sent')"
+        " transaction_status = 'Request Sent') where order_date is null"
 
 shipDateSqlStmt = "update ill_tracking t set ship_date = " +
         " (select transaction_date from ill_borrowing l where l.transaction_number = t.transaction_number and " +
-        " transaction_status = 'Shipped')"
+        " transaction_status = 'Shipped') where ship_date is null"
 
 receiveDateSqlStmt = "update ill_tracking t set receive_date = " +
         " (select transaction_date from ill_borrowing l where l.transaction_number = t.transaction_number and " +
-        " transaction_status = 'Awaiting Post Receipt Processing')"
+        " transaction_status = 'Awaiting Post Receipt Processing') where receive_date is null"
 
 articleReceiveDateSqlStmt = "update ill_tracking t set receive_date = " +
         " (select transaction_date from ill_borrowing l where l.transaction_number = t.transaction_number and " +
-        " transaction_status = 'Delivered to Web')"
+        " transaction_status = 'Delivered to Web') where receive_date is null"
 
 arrivalDateSqlStmt = "insert into ill_lending_tracking (transaction_number, request_type, arrival_date) " +
         " select transaction_number, request_type, transaction_date " +

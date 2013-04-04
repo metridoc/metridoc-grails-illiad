@@ -26,7 +26,7 @@ class IlliadTool extends RunnableTool {
     static final LENDER_ADDRESSES = "LenderAddresses"
     static final USERS = "Users"
     static final USERS_ALL = "UsersAll"
-    public static final String OTHER = 'Other'
+    public static final String OTHER = "Other"
 
     def _lenderTableName
     def _userTableName
@@ -84,7 +84,7 @@ class IlliadTool extends RunnableTool {
 
         use(MetridocScript) {
             binding.target(default: "runs illiad workflow") {
-                depends("clearingIlliadTables", "migrateData", "doUpdateBorrowing", "doUpdateLending", "doIllGroupOtherInsert", "cleanUpIllTransactionLendingLibraries")
+                depends("clearingIlliadTables", "migrateData", "doUpdateBorrowing", "doUpdateLending",  "doIllGroupOtherInsert", "cleanUpIllTransactionLendingLibraries")
             }
         }
     }
@@ -109,22 +109,6 @@ class IlliadTool extends RunnableTool {
         }
     }
 
-    void addLendingUpdate() {
-        use(MetridocScript){
-            binding.target(doUpdateLending: "updates the lending table"){
-                [
-                        getIlliadSqlStatements().orderDateSqlStmt,
-                        getIlliadSqlStatements().shipDateSqlStmt,
-                        getIlliadSqlStatements().receiveDateSqlStmt,
-                        getIlliadSqlStatements().articleReceiveDateSqlStmt
-                ].each {
-                    log.info "updating lending with sql statement $it"
-                    getSql().execute(it as String)
-                }
-            }
-        }
-    }
-
     void addBorrowingUpdate() {
         use(MetridocScript) {
             binding.target(doUpdateBorrowing: "updates the borrowing tables") {
@@ -136,6 +120,21 @@ class IlliadTool extends RunnableTool {
                         getIlliadSqlStatements().articleReceiveDateSqlStmt
                 ].each {
                     log.info "update borrowing with sql statement $it"
+                    getSql().execute(it as String)
+                }
+            }
+        }
+    }
+
+    void addLendingUpdate() {
+        use(MetridocScript){
+            binding.target(doUpdateLending: "updates the lending table"){
+                [
+                        getIlliadSqlStatements().arrivalDateSqlStmt,
+                        getIlliadSqlStatements().completionSqlStmt,
+                        getIlliadSqlStatements().cancelledSqlStmt
+                ].each {
+                    log.info "updating lending with sql statement $it"
                     getSql().execute(it as String)
                 }
             }

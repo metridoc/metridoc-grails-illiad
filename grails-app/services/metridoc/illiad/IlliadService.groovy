@@ -95,7 +95,7 @@ class IlliadService {
                 def groupData = getGroupDataMap(groupId, result)
                 groupData.filledRequests = it.transNum
                 groupData.sumFees = it.sumFees
-                //setTurnarounds(isBorrowing, groupData, it)
+//                setTurnarounds(isBorrowing, groupData, it)
             })
         }
 
