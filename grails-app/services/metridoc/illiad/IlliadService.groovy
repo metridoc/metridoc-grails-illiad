@@ -94,8 +94,7 @@ class IlliadService {
                 int groupId = it.getAt(0) != null ? it.getAt(0) : GROUP_ID_TOTAL;
                 def groupData = getGroupDataMap(groupId, result)
                 groupData.filledRequests = it.transNum
-                groupData.sumFees = it.sumFees
-//                setTurnarounds(isBorrowing, groupData, it)
+                groupData.sumFees = it.sumFees != null ? it.sumFees : 0
             })
         }
 
@@ -118,7 +117,7 @@ class IlliadService {
                 int groupId = it.getAt(0) != null ? it.getAt(0) : GROUP_ID_TOTAL;
                 def groupData = getGroupDataMap(groupId, result)
                 groupData.exhaustedRequests = it.transNum
-                groupData.sumFees += it.sumFees
+                groupData.sumFees += it.sumFees != null ? it.sumFees : 0
             })
         }
 

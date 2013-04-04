@@ -5,7 +5,7 @@ class IlliadQueriesService {
     def transactionCountsBorrowing = '''
                     select lg.group_no, g.group_name,
                     count(distinct t.transaction_number) transNum,
-                    IFNULL(sum(billing_amount), 0) as sumFees
+                    sum(billing_amount) as sumFees
                     from ill_transaction t
                         left join ill_lender_group lg on t.lending_library=lg.lender_code
                         left join ill_group g on lg.group_no=g.group_no
@@ -31,7 +31,7 @@ class IlliadQueriesService {
     def transactionCountsLending = '''
                     select lg.group_no, g.group_name,
                     count(distinct t.transaction_number) transNum,
-                    IFNULL(sum(billing_amount), 0) as sumFees
+                    sum(billing_amount) as sumFees
                     from ill_transaction t
                         left join ill_lender_group lg on t.lending_library=lg.lender_code
                         left join ill_group g on lg.group_no=g.group_no
