@@ -10,6 +10,7 @@ class IlliadJob extends Script {
         run()
     }
 
+    @SuppressWarnings("GroovyVariableNotAssigned")
     @Override
     def run() {
         //TODO:need to get rid of this in the core.... just dump info in the binding or auto bind
@@ -23,6 +24,6 @@ class IlliadJob extends Script {
         tool.dataSource = dataSource
         tool.dataSource_from_illiad = dataSource_from_illiad
         tool.binding = binding
-        tool.doRun()
+        tool.configure()
     }
 }

@@ -59,7 +59,7 @@ class IlliadTool extends RunnableTool {
     }
 
     @Override
-    def doRun() {
+    def configure() {
         def binding = getBinding()
         addDefaultTargets()
         use(MetridocScript) {
@@ -81,14 +81,14 @@ class IlliadTool extends RunnableTool {
 
         use(MetridocScript) {
             binding.target(default: "runs illiad workflow") {
-                depends("clearingIlliadTables", "migrateData", "doUpdateBorrowing", "doUpdateLending",  "doIllGroupOtherInsert", "cleanUpIllTransactionLendingLibraries")
+                depends("clearingIlliadTables", "migrateData", "doUpdateBorrowing", "doUpdateLending", "doIllGroupOtherInsert", "cleanUpIllTransactionLendingLibraries")
             }
         }
     }
 
     void addCleanUpIllTransactionLendingLibraries() {
-        use(MetridocScript){
-            binding.target(cleanUpIllTransactionLendingLibraries: "cleans up data in ill_transaction, ill_lending_tracking and ill_tracking to facilitate agnostic sql queries in the dashboard"){
+        use(MetridocScript) {
+            binding.target(cleanUpIllTransactionLendingLibraries: "cleans up data in ill_transaction, ill_lending_tracking and ill_tracking to facilitate agnostic sql queries in the dashboard") {
                 getSql().execute("update ill_transaction set lending_library = 'Other' where lending_library is null")
                 getSql().execute("update ill_transaction set lending_library = 'Other' where lending_library not in (select distinct lender_code from ill_lender_group)")
                 IllTracking.updateTurnAroundsForAllRecords()
@@ -98,8 +98,8 @@ class IlliadTool extends RunnableTool {
     }
 
     void addIllGroupOtherInsert() {
-        use(MetridocScript){
-            binding.target(doIllGroupOtherInsert: "inserts extra records into ill_group to deal with 'OTHER'"){
+        use(MetridocScript) {
+            binding.target(doIllGroupOtherInsert: "inserts extra records into ill_group to deal with 'OTHER'") {
                 IllGroup.withNewTransaction {
                     new IllGroup(groupNo: IlliadService.GROUP_ID_OTHER, groupName: OTHER).save(failOnError: true)
                     new IllLenderGroup(groupNo: IlliadService.GROUP_ID_OTHER, lenderCode: OTHER).save(failOnError: true)
@@ -126,8 +126,8 @@ class IlliadTool extends RunnableTool {
     }
 
     void addLendingUpdate() {
-        use(MetridocScript){
-            binding.target(doUpdateLending: "updates the lending table"){
+        use(MetridocScript) {
+            binding.target(doUpdateLending: "updates the lending table") {
                 [
                         illiadSqlStatements.arrivalDateSqlStmt,
                         illiadSqlStatements.completionSqlStmt,
@@ -243,15 +243,15 @@ class IlliadMsSqlQueries {
 
     def groupLinkSqlStmt = "select distinct GroupNumber as group_no, LenderString as lender_code from GroupsLink"
 
-    def lenderAddrSqlStmt = {String lenderTableName ->
+    def lenderAddrSqlStmt = { String lenderTableName ->
         "select distinct LenderString as lender_code, LibraryName as library_name, " +
                 " BillingCategory as billing_category, address1+'; '+address2+'; '+address3+'; '+address4 as address " +
                 " from ${lenderTableName}"
     }
 
     def referenceNumberSqlStmt = "select distinct i.TransactionNumber as transaction_number, i.OCLCNumber as oclc, " +
-    " i.Type as ref_type, i.Data as ref_number from WorldCatInformation i, Transactions t " +
-    " where t.TransactionNumber = i.TransactionNumber and t.TransactionStatus in ('Request Finished','Cancelled by ILL Staff')"
+            " i.Type as ref_type, i.Data as ref_number from WorldCatInformation i, Transactions t " +
+            " where t.TransactionNumber = i.TransactionNumber and t.TransactionStatus in ('Request Finished','Cancelled by ILL Staff')"
 
     def transactionSqlStmt = { String startDate ->
         "select TransactionNumber as transaction_number, " +
@@ -269,7 +269,7 @@ class IlliadMsSqlQueries {
                 " where TransactionStatus in ('Request Finished','Cancelled by ILL Staff') and convert(varchar(11), TransactionDate, 112) >= '${startDate}'"
     }
 
-    def lendingSqlStmt = {String startDate ->
+    def lendingSqlStmt = { String startDate ->
         "select t2.TransactionNumber as transaction_number, t1.RequestType as request_type, t2.ChangedTo as status, min(t2.DateTime) as transaction_date " +
                 " from Transactions t1 join Tracking t2 on t2.TransactionNumber = t1.TransactionNumber and t1.ProcessType = 'Lending' " +
                 " where convert(varchar(11), t1.TransactionDate, 112) >= '${startDate}' and " +
@@ -278,7 +278,7 @@ class IlliadMsSqlQueries {
                 " group by t2.TransactionNumber, t1.RequestType, t2.ChangedTo"
     }
 
-    def borrowingSqlStmt = {String startDate ->
+    def borrowingSqlStmt = { String startDate ->
         "select t2.TransactionNumber as transaction_number, t1.RequestType as request_type, " +
                 " t2.ChangedTo as transaction_status, min(t2.DateTime) as transaction_date " +
                 " from Transactions t1 join Tracking t2 on t2.TransactionNumber=t1.TransactionNumber " +
@@ -295,37 +295,37 @@ class IlliadMsSqlQueries {
                 " group by h.TransactionNumber, t.RequestType"
     }
 
-    def userSqlStmt = {String userTableName ->
+    def userSqlStmt = { String userTableName ->
         "select distinct substring(sys.fn_sqlvarbasetostr(hashbytes('MD5',UserName)),3,32) as user_id, Department, nvtgc " +
                 "from ${userTableName} where UserName in (select UserName from Transactions)"
     }
 
     def orderDateSqlStmt = "update ill_tracking t set order_date = " +
-    " (select transaction_date from ill_borrowing l where l.transaction_number = t.transaction_number and " +
-    " transaction_status = 'Request Sent') where order_date is null"
+            " (select transaction_date from ill_borrowing l where l.transaction_number = t.transaction_number and " +
+            " transaction_status = 'Request Sent') where order_date is null"
 
     def shipDateSqlStmt = "update ill_tracking t set ship_date = " +
-    " (select transaction_date from ill_borrowing l where l.transaction_number = t.transaction_number and " +
-    " transaction_status = 'Shipped') where ship_date is null"
+            " (select transaction_date from ill_borrowing l where l.transaction_number = t.transaction_number and " +
+            " transaction_status = 'Shipped') where ship_date is null"
 
     def receiveDateSqlStmt = "update ill_tracking t set receive_date = " +
-    " (select transaction_date from ill_borrowing l where l.transaction_number = t.transaction_number and " +
-    " transaction_status = 'Awaiting Post Receipt Processing') where receive_date is null"
+            " (select transaction_date from ill_borrowing l where l.transaction_number = t.transaction_number and " +
+            " transaction_status = 'Awaiting Post Receipt Processing') where receive_date is null"
 
     def articleReceiveDateSqlStmt = "update ill_tracking t set receive_date = " +
-    " (select transaction_date from ill_borrowing l where l.transaction_number = t.transaction_number and " +
-    " transaction_status = 'Delivered to Web') where receive_date is null"
+            " (select transaction_date from ill_borrowing l where l.transaction_number = t.transaction_number and " +
+            " transaction_status = 'Delivered to Web') where receive_date is null"
 
     def arrivalDateSqlStmt = "insert into ill_lending_tracking (transaction_number, request_type, arrival_date) " +
-    " select transaction_number, request_type, transaction_date " +
-    " from ill_lending where status = 'Awaiting Lending Request Processing'"
+            " select transaction_number, request_type, transaction_date " +
+            " from ill_lending where status = 'Awaiting Lending Request Processing'"
 
     def completionSqlStmt = "update ill_lending_tracking t, ill_lending l " +
-    " set completion_date = transaction_date, completion_status = status " +
-    " where l.transaction_number = t.transaction_number and status " +
-    " not in ('Awaiting Lending Request Processing','Cancelled by ILL Staff')"
+            " set completion_date = transaction_date, completion_status = status " +
+            " where l.transaction_number = t.transaction_number and status " +
+            " not in ('Awaiting Lending Request Processing','Cancelled by ILL Staff')"
 
     def cancelledSqlStmt = "update ill_lending_tracking t, ill_lending l " +
-    " set completion_date = transaction_date, completion_status = status " +
-    " where l.transaction_number = t.transaction_number and status = 'Cancelled by ILL Staff'"
+            " set completion_date = transaction_date, completion_status = status " +
+            " where l.transaction_number = t.transaction_number and status = 'Cancelled by ILL Staff'"
 }
