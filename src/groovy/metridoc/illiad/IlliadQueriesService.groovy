@@ -16,9 +16,9 @@ class IlliadQueriesService {
 
     def transactionTurnaroundsBorrowing = '''
                     select lg.group_no,
-                    AVG(DATEDIFF(receive_date, ship_date)) as turnaroundShpRec,
-                    AVG(DATEDIFF(ship_date, request_date))as turnaroundReqShp,
-                    AVG(DATEDIFF(receive_date, request_date)) as turnaroundReqRec
+                    AVG(bt.turnaround_shp_rec) as turnaroundShpRec,
+                    AVG(bt.turnaround_req_shp) as turnaroundReqShp,
+                    AVG(bt.turnaround_req_rec) as turnaroundReqRec
                     from ill_transaction t
                         left join ill_lender_group lg on t.lending_library=lg.lender_code
                         left join ill_tracking bt on t.transaction_number=bt.transaction_number
@@ -43,7 +43,7 @@ class IlliadQueriesService {
 
     def transactionTurnaroundsLending = '''
                     select lg.group_no,
-                    AVG(DATEDIFF(lt.completion_date, lt.arrival_date)) as turnaround
+                    AVG(lt.turnaround) as turnaround
                     from ill_transaction t
                         left join ill_lender_group lg on t.lending_library=lg.lender_code
                         left join ill_lending_tracking lt on t.transaction_number=lt.transaction_number
@@ -56,9 +56,9 @@ class IlliadQueriesService {
     /* Need to get turnarounds for row Total separately, to avoid double counts
 (because of joining with lending_group)*/
     def transactionTotalTurnaroundsBorrowing = '''
-                    select AVG(DATEDIFF(receive_date, ship_date)) as turnaroundShpRec,
-                    AVG(DATEDIFF(ship_date, request_date))as turnaroundReqShp,
-                    AVG(DATEDIFF(receive_date, request_date)) as turnaroundReqRec
+                    select AVG(bt.turnaround_shp_rec) as turnaroundShpRec,
+                    AVG(bt.turnaround_req_shp) as turnaroundReqShp,
+                    AVG(bt.turnaround_req_rec) as turnaroundReqRec
                     from ill_transaction t
                         left join ill_tracking bt on t.transaction_number=bt.transaction_number
                         where t.process_type='Borrowing' and t.request_type=? and transaction_date between ? and ?
@@ -66,7 +66,7 @@ class IlliadQueriesService {
     		'''
 
     def transactionTotalTurnaroundsLending = '''
-                    select AVG(DATEDIFF(lt.completion_date, lt.arrival_date)) as turnaround
+                    select AVG(lt.turnaround) as turnaround
                     from ill_transaction t
                         left join ill_lending_tracking lt on t.transaction_number=lt.transaction_number
                         where t.process_type='Lending' and t.request_type=? and transaction_date between ? and ?

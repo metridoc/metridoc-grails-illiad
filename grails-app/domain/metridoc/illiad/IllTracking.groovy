@@ -1,5 +1,6 @@
 package metridoc.illiad
 
+import metridoc.utils.DateUtil
 import org.slf4j.LoggerFactory
 
 import static metridoc.illiad.IllBorrowing.AWAITING_COPYRIGHT_CLEARANCE
@@ -15,7 +16,9 @@ class IllTracking {
     Date shipDate
     Date receiveDate
     Date orderDate
-
+    Double turnaround_shp_rec
+    Double turnaround_req_shp
+    Double turnaround_req_rec
 
     static constraints = {
         transactionNumber(unique: true)
@@ -23,6 +26,9 @@ class IllTracking {
         shipDate(nullable: true)
         receiveDate(nullable: true)
         orderDate(nullable: true)
+        turnaround_req_rec(nullable: true)
+        turnaround_req_shp(nullable: true)
+        turnaround_shp_rec(nullable: true)
     }
 
     static mapping = {
@@ -39,7 +45,7 @@ class IllTracking {
     static updateFromIllBorrowing_AwaitingRequestProcessing() {
         Set<Long> alreadyProcessedTransactions
         //need to do a new one since this method might already be surrounded by a transaction
-        IllTracking.withNewTransaction{
+        IllTracking.withNewTransaction {
             alreadyProcessedTransactions = IllTracking.list().collect { it.transactionNumber } as Set
         }
         def itemsToStore = []
@@ -53,6 +59,25 @@ class IllTracking {
         LoggerFactory.getLogger(IllTracking).info "finished migrating all borrowing data that is awaiting request processing"
     }
 
+    static updateTurnAroundsForAllRecords() {
+        IllTracking.withNewTransaction {
+            IllTracking.list().each { IllTracking illTracking ->
+                updateTurnArounds(illTracking)
+                illTracking.save(failOnError: true)
+            }
+        }
+    }
+
+    private static updateTurnArounds(IllTracking illTracking) {
+        def receiveDate = illTracking.receiveDate
+        def requestDate = illTracking.requestDate
+        def shipDate = illTracking.shipDate
+
+        illTracking.turnaround_req_rec = DateUtil.differenceByDays(receiveDate, requestDate)
+        illTracking.turnaround_req_shp = DateUtil.differenceByDays(shipDate, requestDate)
+        illTracking.turnaround_shp_rec = DateUtil.differenceByDays(receiveDate, shipDate)
+    }
+
     static updateFromIllBorrowing_AwaitingCopyrightClearance() {
         LoggerFactory.getLogger(IllTracking).info "migrating all borrowing data that is awaiting copyright clearance"
         def itemsToStore = []
@@ -64,10 +89,7 @@ class IllTracking {
     }
 
     private static addItem(IllBorrowing borrowing, List<IllTracking> itemsToStore) {
-        itemsToStore << createTrackingFromBorrowing(borrowing)
-        if (itemsToStore.size() > 50) {
-            processBatch(itemsToStore)
-        }
+        addTrackingItem(createTrackingFromBorrowing(borrowing), itemsToStore)
     }
 
     private static IllTracking createTrackingFromBorrowing(IllBorrowing borrowing) {
@@ -77,6 +99,13 @@ class IllTracking {
                 processType: BORROWING,
                 requestDate: borrowing.transactionDate
         )
+    }
+
+    private static addTrackingItem(IllTracking illTracking, List<IllTracking> itemsToStore) {
+        itemsToStore.add(illTracking)
+        if (itemsToStore.size() > 50) {
+            processBatch(itemsToStore)
+        }
     }
 
     private static processBatch(List<IllTracking> illTrackingList) {

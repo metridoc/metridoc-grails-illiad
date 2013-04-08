@@ -39,6 +39,12 @@ class IlliadTool extends RunnableTool {
     List<Class<Script>> targetClasses = []
     Script illiadSqlStatements
 
+    void setTargetToRun(String targetToRun) {
+        if (targetToRun) {
+            this.targetToRun = targetToRun
+        }
+    }
+
     @Override
     void setBinding(Binding binding) {
         super.setBinding(binding)
@@ -91,9 +97,11 @@ class IlliadTool extends RunnableTool {
 
     void addCleanUpIllTransactionLendingLibraries() {
         use(MetridocScript){
-            binding.target(cleanUpIllTransactionLendingLibraries: "cleans up data in ill_transaction to facilitate agnostic sql queries in the dashboard"){
+            binding.target(cleanUpIllTransactionLendingLibraries: "cleans up data in ill_transaction, ill_lending_tracking and ill_tracking to facilitate agnostic sql queries in the dashboard"){
                 getSql().execute("update ill_transaction set lending_library = 'Other' where lending_library is null")
                 getSql().execute("update ill_transaction set lending_library = 'Other' where lending_library not in (select distinct lender_code from ill_lender_group)")
+                IllTracking.updateTurnAroundsForAllRecords()
+                IllLendingTracking.updateTurnAroundsForAllRecords()
             }
         }
     }

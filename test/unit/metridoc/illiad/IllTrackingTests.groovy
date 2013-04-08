@@ -1,6 +1,7 @@
 package metridoc.illiad
 
 import grails.test.mixin.Mock
+import metridoc.utils.DateUtil
 import org.junit.Before
 import org.junit.Test
 
@@ -57,6 +58,18 @@ class IllTrackingTests {
         assert 7 == list.size()
         assert 7 == IllTracking.findAllByRequestDateGreaterThan(new Date() + 1).size()
     }
+
+    @Test
+    void "test updating turnarounds"() {
+        def illTracking = new IllTracking()
+        illTracking.requestDate = new Date() //now
+
+        illTracking.receiveDate = new Date(new Date().time + DateUtil.ONE_DAY + (Long)(DateUtil.ONE_DAY / 2))
+        IllTracking.updateTurnArounds(illTracking)
+        assert Math.abs(illTracking.turnaround_req_rec - 1.5) < 0.001 //since we are dealing with decimals it wont be perfect
+    }
+
+
 
     private void requestDateTesting() {
         def list = IllTracking.list()

@@ -8,6 +8,7 @@ package metridoc.utils
  */
 class DateUtil {
 	public static FY_START_MONTH = Calendar.JULY;
+    public static final long ONE_DAY = 1000 * 60 * 60 * 24
 
 	public static Date getDate(int year, int month, int day, int hourOfDay, int minute, int second){
 		def calendar = Calendar.getInstance()
@@ -51,5 +52,20 @@ class DateUtil {
 		def endMonth = getFiscalYearEndMonth();
 		return getDateEndOfDay(fiscalYear, endMonth, getLastDayOfMonth(fiscalYear, endMonth))
 	}
+
+    public static Double differenceByDays(Date left, Date right) {
+        if (datesNotNull(left, right)) {
+            long leftLong = left.time
+            long rightLong = right.time
+
+            return (leftLong - rightLong) / ONE_DAY
+        } else {
+            return null
+        }
+    }
+
+    private static boolean datesNotNull(Date dateOne, Date dateTwo) {
+        dateOne != null && dateTwo != null
+    }
 }
 

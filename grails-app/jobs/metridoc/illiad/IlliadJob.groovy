@@ -1,22 +1,25 @@
 package metridoc.illiad
 
-import grails.util.Holders
-import groovy.sql.Sql
-import metridoc.core.MetridocJob
-
-class IlliadJob extends MetridocJob {
-    static triggers = {
-        def configuredSchedule = Holders.grailsApplication?.mergedConfig.metridoc.illiad.schedule
-        def scheduleUsed = configuredSchedule ?: "0 0 0 * * ?"
-        cron name: "illiad ingestor", cronExpression: scheduleUsed
-    }
+class IlliadJob extends Script {
 
     def dataSource_from_illiad
     def dataSource
 
+    //TODO:need to fix the core so scripts can be called via the commandline easily instead of requiring this mess
+    def execute(jobExecutionContext) {
+        run()
+    }
+
     @Override
-    def doExecute() {
+    def run() {
+        //TODO:need to get rid of this in the core.... just dump info in the binding or auto bind
+        def jobDataMap = binding.jobDataMap
+        String targetToRun
+        if (jobDataMap) {
+            targetToRun = jobDataMap.target
+        }
         def tool = new IlliadTool()
+        tool.setTargetToRun(targetToRun)
         tool.dataSource = dataSource
         tool.dataSource_from_illiad = dataSource_from_illiad
         tool.binding = binding

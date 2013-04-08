@@ -14,4 +14,12 @@ class DateUtilTest {
     void "testing getting fiscal year with defaults"() {
         assert 2005 == DateUtil.getFiscalYear(2004, 6)
     }
+
+    @Test
+    void "test difference by days"() {
+        def now = new Date()
+        def littleBitInFuture = new Date(new Date().time + DateUtil.ONE_DAY + (Long)(DateUtil.ONE_DAY / 2))
+        double difference = DateUtil.differenceByDays(littleBitInFuture, now)
+        assert Math.abs(difference - 1.5) < 0.001 //since we are dealing with decimals it wont be perfect
+    }
 }
