@@ -73,11 +73,10 @@ class IlliadService {
         }
 
         def genQuery = pickQuery(illiadQueriesService.transactionCountsBorrowing, illiadQueriesService.transactionCountsLending)
+        def genQueryAgg = pickQuery(illiadQueriesService.transactionCountsBorrowingAggregate, illiadQueriesService.transactionCountsLendingAggregate)
         def turnaroundQuery = pickQuery(illiadQueriesService.transactionTotalTurnaroundsBorrowing, illiadQueriesService.transactionTotalTurnaroundsLending)
         def turnaroundPerGroupQuery = pickQuery(illiadQueriesService.transactionTurnaroundsBorrowing, illiadQueriesService.transactionTurnaroundsLending)
 
-
-        def processType = isBorrowing ? 'Borrowing' : 'Lending';
         def requestType = isBooks ? 'Loan' : 'Article';
 
         def result = [:];
@@ -89,13 +88,24 @@ class IlliadService {
         String queryExhausted = getAdjustedQuery(genQuery,
                 ['add_condition': ' and not (transaction_status<=>\'Request Finished\')']);
 
+        String queryFilledAgg = getAdjustedQuery(genQueryAgg,
+                ['add_condition': ' and transaction_status=\'Request Finished\'']);
+
+        String queryExhaustedAgg = getAdjustedQuery(genQueryAgg,
+                ['add_condition': ' and not (transaction_status<=>\'Request Finished\')']);
+
         profile("Running query for filledQueries (borrowing=${isBorrowing}, book=${isBooks}): " + queryFilled + " params=" + sqlParams) {
             sql.eachRow(queryFilled, sqlParams, {
-                int groupId = it.getAt(0) != null ? it.getAt(0) : GROUP_ID_TOTAL;
+                int groupId = it.getAt(0)
                 def groupData = getGroupDataMap(groupId, result)
                 groupData.filledRequests = it.transNum
                 groupData.sumFees = it.sumFees != null ? it.sumFees : 0
             })
+
+            def row = sql.firstRow(queryFilledAgg, sqlParams)
+            def groupData = getGroupDataMap(GROUP_ID_TOTAL, result)
+            groupData.filledRequests = row.transNum
+            groupData.sumFees = row.sumFees != null ? row.sumFees : 0
         }
 
         profile("Running query for turnaroundPerGroupQuery (borrowing=${isBorrowing}, book=#{isBook}): " + turnaroundPerGroupQuery + " params=" + sqlParams) {
@@ -114,11 +124,15 @@ class IlliadService {
 
         profile("Running query for exhausted requests (borrowing=${isBorrowing}, book=#{isBook}): " + queryExhausted + " params=" + sqlParams) {
             sql.eachRow(queryExhausted, sqlParams, {
-                int groupId = it.getAt(0) != null ? it.getAt(0) : GROUP_ID_TOTAL;
+                int groupId = it.getAt(0)
                 def groupData = getGroupDataMap(groupId, result)
                 groupData.exhaustedRequests = it.transNum
                 groupData.sumFees += it.sumFees != null ? it.sumFees : 0
             })
+            def row = sql.firstRow(queryExhaustedAgg, sqlParams)
+            def groupData = getGroupDataMap(GROUP_ID_TOTAL, result)
+            groupData.exhaustedRequests = row.transNum
+            groupData.sumFees += row.sumFees != null ? row.sumFees : 0
         }
 
         log.debug(result);
@@ -132,14 +146,6 @@ class IlliadService {
             groupData.turnaroundReqRec = srcRow.turnaroundReqRec
         } else {
             groupData.turnaround = srcRow.turnaround
-        }
-    }
-
-    private int getAdjustedGroupId(groupId, container) {
-        if (groupId == GROUP_ID_TOTAL && !container.contains(GROUP_ID_OTHER)) {
-            return GROUP_ID_OTHER
-        } else {
-            return groupId;
         }
     }
 
@@ -169,9 +175,5 @@ class IlliadService {
         closure.call()
         def end = new Date().time
         log.info "Profiling: [${message}] END took ${end - start} ms"
-    }
-
-    void updateBorrowing() {
-
     }
 }

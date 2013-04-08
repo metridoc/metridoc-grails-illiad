@@ -11,8 +11,18 @@ class IlliadQueriesService {
                         left join ill_group g on lg.group_no=g.group_no
                         where t.process_type='Borrowing' and t.request_type=? and transaction_date between ? and ?
                         {add_condition}
-                        group by group_no WITH ROLLUP
+                        group by group_no
     		'''
+
+    def transactionCountsBorrowingAggregate = '''
+                    select count(distinct t.transaction_number) transNum,
+                    sum(billing_amount) as sumFees
+                    from ill_transaction t
+                        left join ill_lender_group lg on t.lending_library=lg.lender_code
+                        left join ill_group g on lg.group_no=g.group_no
+                        where t.process_type='Borrowing' and t.request_type=? and transaction_date between ? and ?
+                        {add_condition}
+            '''
 
     def transactionTurnaroundsBorrowing = '''
                     select lg.group_no,
@@ -37,9 +47,17 @@ class IlliadQueriesService {
                         left join ill_group g on lg.group_no=g.group_no
                         where t.process_type='Lending' and t.request_type=? and transaction_date between ? and ?
                         {add_condition}
-                        group by group_no WITH ROLLUP
+                        group by group_no
     		'''
-
+    def transactionCountsLendingAggregate = '''
+                    select count(distinct t.transaction_number) transNum,
+                    sum(billing_amount) as sumFees
+                    from ill_transaction t
+                        left join ill_lender_group lg on t.lending_library=lg.lender_code
+                        left join ill_group g on lg.group_no=g.group_no
+                        where t.process_type='Lending' and t.request_type=? and transaction_date between ? and ?
+                        {add_condition}
+            '''
 
     def transactionTurnaroundsLending = '''
                     select lg.group_no,
