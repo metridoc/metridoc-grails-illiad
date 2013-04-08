@@ -7,7 +7,9 @@ import javax.sql.DataSource
 import java.text.SimpleDateFormat
 
 class IlliadService {
-
+    /*
+        LOOK AT BOTTOM OF CLASS FOR QUERY DEFINITIONS
+     */
     static final int GROUP_ID_OTHER = -2;
     static final int GROUP_ID_TOTAL = -1;
     private static final FORMATTER = new SimpleDateFormat("yyyy-MM-dd hh:mm")
@@ -15,7 +17,6 @@ class IlliadService {
     DataSource dataSourceUnproxied_illiad
     DataSource dataSourceUnproxied
 
-    def illiadQueriesService = new IlliadQueriesService()
     def model = Collections.synchronizedMap([:])
 
     DataSource getIlliadDataSource() {
@@ -72,10 +73,10 @@ class IlliadService {
             isBorrowing ? borrowingQuery : lendingQuery
         }
 
-        def genQuery = pickQuery(illiadQueriesService.transactionCountsBorrowing, illiadQueriesService.transactionCountsLending)
-        def genQueryAgg = pickQuery(illiadQueriesService.transactionCountsBorrowingAggregate, illiadQueriesService.transactionCountsLendingAggregate)
-        def turnaroundQuery = pickQuery(illiadQueriesService.transactionTotalTurnaroundsBorrowing, illiadQueriesService.transactionTotalTurnaroundsLending)
-        def turnaroundPerGroupQuery = pickQuery(illiadQueriesService.transactionTurnaroundsBorrowing, illiadQueriesService.transactionTurnaroundsLending)
+        def genQuery = pickQuery(transactionCountsBorrowing, transactionCountsLending)
+        def genQueryAgg = pickQuery(transactionCountsBorrowingAggregate, transactionCountsLendingAggregate)
+        def turnaroundQuery = pickQuery(transactionTotalTurnaroundsBorrowing, transactionTotalTurnaroundsLending)
+        def turnaroundPerGroupQuery = pickQuery(transactionTurnaroundsBorrowing, transactionTurnaroundsLending)
 
         def requestType = isBooks ? 'Loan' : 'Article';
 
@@ -92,7 +93,7 @@ class IlliadService {
                 ['add_condition': ' and transaction_status=\'Request Finished\'']);
 
         String queryExhaustedAgg = getAdjustedQuery(genQueryAgg,
-                ['add_condition': ' and not (transaction_status<=>\'Request Finished\')']);
+                ['add_condition': ' and not (transaction_status is not null and transaction_status = \'Request Finished\')']);
 
         profile("Running query for filledQueries (borrowing=${isBorrowing}, book=${isBooks}): " + queryFilled + " params=" + sqlParams) {
             sql.eachRow(queryFilled, sqlParams, {
@@ -165,8 +166,7 @@ class IlliadService {
     }
 
     def getGroupList() {
-        Sql sql = new Sql(getIlliadDataSource());
-        return sql.rows(illiadQueriesService.lenderGroupList, [])
+        IllGroup.list()
     }
 
     def profile(String message, Closure closure) {
@@ -176,4 +176,93 @@ class IlliadService {
         def end = new Date().time
         log.info "Profiling: [${message}] END took ${end - start} ms"
     }
+
+    def transactionCountsBorrowing = '''
+                    select lg.group_no, g.group_name,
+                    count(distinct t.transaction_number) transNum,
+                    sum(billing_amount) as sumFees
+                    from ill_transaction t
+                        left join ill_lender_group lg on t.lending_library=lg.lender_code
+                        left join ill_group g on lg.group_no=g.group_no
+                        where t.process_type='Borrowing' and t.request_type=? and transaction_date between ? and ?
+                        {add_condition}
+                        group by group_no
+    		'''
+
+    def transactionCountsBorrowingAggregate = '''
+                    select count(distinct t.transaction_number) transNum,
+                    sum(billing_amount) as sumFees
+                    from ill_transaction t
+                        left join ill_lender_group lg on t.lending_library=lg.lender_code
+                        left join ill_group g on lg.group_no=g.group_no
+                        where t.process_type='Borrowing' and t.request_type=? and transaction_date between ? and ?
+                        {add_condition}
+            '''
+
+    def transactionTurnaroundsBorrowing = '''
+                    select lg.group_no,
+                    AVG(bt.turnaround_shp_rec) as turnaroundShpRec,
+                    AVG(bt.turnaround_req_shp) as turnaroundReqShp,
+                    AVG(bt.turnaround_req_rec) as turnaroundReqRec
+                    from ill_transaction t
+                        left join ill_lender_group lg on t.lending_library=lg.lender_code
+                        left join ill_tracking bt on t.transaction_number=bt.transaction_number
+                        where t.process_type='Borrowing' and t.request_type=? and transaction_date between ? and ?
+                        and request_date is not null and ship_date is not null and receive_date is not null
+                        and transaction_status='Request Finished'
+                        group by group_no
+    		'''
+
+    def transactionCountsLending = '''
+                    select lg.group_no, g.group_name,
+                    count(distinct t.transaction_number) transNum,
+                    sum(billing_amount) as sumFees
+                    from ill_transaction t
+                        left join ill_lender_group lg on t.lending_library=lg.lender_code
+                        left join ill_group g on lg.group_no=g.group_no
+                        where t.process_type='Lending' and t.request_type=? and transaction_date between ? and ?
+                        {add_condition}
+                        group by group_no
+    		'''
+    def transactionCountsLendingAggregate = '''
+                    select count(distinct t.transaction_number) transNum,
+                    sum(billing_amount) as sumFees
+                    from ill_transaction t
+                        left join ill_lender_group lg on t.lending_library=lg.lender_code
+                        left join ill_group g on lg.group_no=g.group_no
+                        where t.process_type='Lending' and t.request_type=? and transaction_date between ? and ?
+                        {add_condition}
+            '''
+
+    def transactionTurnaroundsLending = '''
+                    select lg.group_no,
+                    AVG(lt.turnaround) as turnaround
+                    from ill_transaction t
+                        left join ill_lender_group lg on t.lending_library=lg.lender_code
+                        left join ill_lending_tracking lt on t.transaction_number=lt.transaction_number
+                        where t.process_type='Lending' and t.request_type=? and transaction_date between ? and ?
+                        and lt.completion_date is not null and lt.arrival_date is not null
+                        and transaction_status='Request Finished'
+                        group by group_no
+    		'''
+
+    /* Need to get turnarounds for row Total separately, to avoid double counts
+(because of joining with lending_group)*/
+    def transactionTotalTurnaroundsBorrowing = '''
+                    select AVG(bt.turnaround_shp_rec) as turnaroundShpRec,
+                    AVG(bt.turnaround_req_shp) as turnaroundReqShp,
+                    AVG(bt.turnaround_req_rec) as turnaroundReqRec
+                    from ill_transaction t
+                        left join ill_tracking bt on t.transaction_number=bt.transaction_number
+                        where t.process_type='Borrowing' and t.request_type=? and transaction_date between ? and ?
+                        and transaction_status='Request Finished' and request_date is not null and ship_date is not null and receive_date is not null
+    		'''
+
+    def transactionTotalTurnaroundsLending = '''
+                    select AVG(lt.turnaround) as turnaround
+                    from ill_transaction t
+                        left join ill_lending_tracking lt on t.transaction_number=lt.transaction_number
+                        where t.process_type='Lending' and t.request_type=? and transaction_date between ? and ?
+                        and transaction_status='Request Finished' and lt.completion_date is not null and lt.arrival_date is not null
+    		'''
 }

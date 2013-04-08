@@ -2,12 +2,10 @@ package metridoc.illiad
 
 import grails.test.mixin.Mock
 import metridoc.utils.DateUtil
-import org.junit.Before
 import org.junit.Test
 
 import static metridoc.illiad.IllBorrowing.AWAITING_COPYRIGHT_CLEARANCE
 import static metridoc.illiad.IllBorrowing.AWAITING_REQUEST_PROCESSING
-import static metridoc.illiad.IllBorrowing.REQUEST_SENT
 
 /**
  * Created with IntelliJ IDEA.

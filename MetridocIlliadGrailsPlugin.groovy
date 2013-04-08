@@ -1,5 +1,3 @@
-import metridoc.illiad.IlliadQueriesService
-
 class MetridocIlliadGrailsPlugin {
     // the plugin version
     def version = "0.3-SNAPSHOT"
@@ -22,9 +20,4 @@ Brief summary/description of the plugin.
 
     // URL to the plugin's documentation
     def documentation = "http://grails.org/plugin/metridoc-illiad"
-
-    def doWithSpring = {
-        //TODO: we should put al of these queries into the config instead
-        illiadQueriesService(IlliadQueriesService)
-    }
 }
