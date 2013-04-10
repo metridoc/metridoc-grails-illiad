@@ -10,12 +10,12 @@ class MetridocIlliadGrailsPlugin {
             "grails-app/views/error.gsp"
     ]
 
-    // TODO Fill in these fields
     def title = "Metridoc Illiad Plugin" // Headline display name of the plugin
     def author = "Thomas Barker"
     def authorEmail = ""
     def description = '''\
-Brief summary/description of the plugin.
+Provides a job for collecting and storing illiad data for the current fiscal year.  Also a very simple dashboard is provided
+to display some simple stats for the current fiscal year
 '''
 
     // URL to the plugin's documentation
