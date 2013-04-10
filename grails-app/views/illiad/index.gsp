@@ -8,7 +8,7 @@
 
 <md:report>
 
-    <div id="updateInfo">last update: ${lastUpdate}</div>
+    <div id="updateInfo">last update: ${lastUpdated}</div>
     <md:header>Borrowing for the Current Fiscal Year</md:header>
 
     <div class='subReportBody'>

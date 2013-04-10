@@ -14,14 +14,14 @@ class IlliadController {
 
     def index() {
         def refresh = false
-        if(params.refresh) {
+        if (params.refresh) {
             refresh = params.refresh
         }
 
-        if(refresh) {
-            illiadService.populateModel()
+        if (refresh) {
+            illiadService.storeCache()
         }
 
-        illiadService.model
+        return IllCache.data
     }
 }

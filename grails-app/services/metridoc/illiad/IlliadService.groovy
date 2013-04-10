@@ -4,7 +4,6 @@ import groovy.sql.Sql
 import metridoc.utils.DateUtil
 
 import javax.sql.DataSource
-import java.text.SimpleDateFormat
 
 class IlliadService {
     /*
@@ -12,43 +11,16 @@ class IlliadService {
      */
     static final int GROUP_ID_OTHER = -2;
     static final int GROUP_ID_TOTAL = -1;
-    private static final FORMATTER = new SimpleDateFormat("yyyy-MM-dd hh:mm")
 
     DataSource dataSourceUnproxied_illiad
     DataSource dataSourceUnproxied
 
-    def model = Collections.synchronizedMap([:])
-
     DataSource getIlliadDataSource() {
-        if(dataSourceUnproxied_illiad) {
+        if (dataSourceUnproxied_illiad) {
             return dataSourceUnproxied_illiad
         }
 
         return dataSourceUnproxied
-    }
-
-    synchronized getModel() {
-        synchronized (this) {
-            if (model) return model
-            populateModel()
-
-            return model
-        }
-    }
-
-    def populateModel() {
-        synchronized (this){
-            def now = new Date()
-            def lastUpdate = FORMATTER.format(now)
-
-            def data = [
-                basicStatsData: getBasicStatsData(null),
-                groups: getGroupList(),
-                lastUpdate: lastUpdate
-            ]
-
-            model.putAll(data)
-        }
     }
 
     def getBasicStatsData(fiscalYear) {
@@ -69,7 +41,7 @@ class IlliadService {
 
         log.info("loading sectional data with isBooks: $isBooks, isBorrowing: $isBorrowing, startDate: $startDate, endDate: $endDate")
 
-        def pickQuery = {borrowingQuery, lendingQuery ->
+        def pickQuery = { borrowingQuery, lendingQuery ->
             isBorrowing ? borrowingQuery : lendingQuery
         }
 
@@ -177,6 +149,14 @@ class IlliadService {
         log.info "Profiling: [${message}] END took ${end - start} ms"
     }
 
+    def storeCache() {
+        def data = [
+                basicStatsData: getBasicStatsData(null),
+                groups: getGroupList()
+        ]
+        IllCache.update(data)
+    }
+
     def transactionCountsBorrowing = '''
                     select lg.group_no, g.group_name,
                     count(distinct t.transaction_number) transNum,
@@ -212,7 +192,6 @@ class IlliadService {
                         and transaction_status='Request Finished'
                         group by group_no
     		'''
-
     def transactionCountsLending = '''
                     select lg.group_no, g.group_name,
                     count(distinct t.transaction_number) transNum,
@@ -224,6 +203,7 @@ class IlliadService {
                         {add_condition}
                         group by group_no
     		'''
+
     def transactionCountsLendingAggregate = '''
                     select count(distinct t.transaction_number) transNum,
                     sum(billing_amount) as sumFees
@@ -234,6 +214,8 @@ class IlliadService {
                         {add_condition}
             '''
 
+    /* Need to get turnarounds for row Total separately, to avoid double counts
+(because of joining with lending_group)*/
     def transactionTurnaroundsLending = '''
                     select lg.group_no,
                     AVG(lt.turnaround) as turnaround
@@ -246,8 +228,6 @@ class IlliadService {
                         group by group_no
     		'''
 
-    /* Need to get turnarounds for row Total separately, to avoid double counts
-(because of joining with lending_group)*/
     def transactionTotalTurnaroundsBorrowing = '''
                     select AVG(bt.turnaround_shp_rec) as turnaroundShpRec,
                     AVG(bt.turnaround_req_shp) as turnaroundReqShp,

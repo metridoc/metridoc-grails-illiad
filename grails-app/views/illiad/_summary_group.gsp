@@ -1,4 +1,4 @@
-<table class="illiadTable table table-striped table hover" cellspacing="0">
+<table class="illiadTable table table-striped table hover">
  <thead>
 <g:if test="${isBorrowing}">
     <tr>
@@ -18,7 +18,7 @@
     </tr>
     </thead>
     <tbody>
-    <g:set var="currentDataMap" value="${summaryData.get(-1) != null ? summaryData.get(-1) : [:]}"/>
+    <g:set var="currentDataMap" value="${summaryData.get("-1") != null ? summaryData.get("-1") : [:]}"/>
     <g:render template="/illiad/summary_row"
               model="[currentDataMap: currentDataMap,
                       index: 0,
@@ -28,7 +28,7 @@
     </tbody>
     </table>
     <br>
-    <table class="illiadTable table table-striped table-hover" cellspacing="0">
+    <table class="illiadTable table table-striped table-hover">
     <thead>
    <tr>
      <th class="mainColHeader" rowspan="2">&nbsp;</th>
@@ -55,7 +55,7 @@
     </tr>
     </thead>
     <tbody>
-    <g:set var="currentDataMap" value="${summaryData.get(-1) != null ? summaryData.get(-1) : [:]}"/>
+    <g:set var="currentDataMap" value="${summaryData.get("-1") != null ? summaryData.get("-1") : [:]}"/>
     <g:render template="/illiad/summary_row"
               model="[currentDataMap: currentDataMap,
                       index: 0,
@@ -65,7 +65,7 @@
     </tbody>
     </table>
     <br>
-    <table class="illiadTable table-striped table table-hover" cellspacing="0">
+    <table class="illiadTable table-striped table table-hover">
     <thead>
    <tr>
      <th class="mainColHeader">&nbsp;</th>
@@ -82,7 +82,7 @@
 <tbody>
 <g:each var="group" status="i" in="${groups}">
     <g:set var="currentDataMap"
-           value="${summaryData.get(group.groupNo) != null ? summaryData.get(group.groupNo) : [:]}"/>
+           value="${summaryData.get(String.valueOf(group.groupNo)) != null ? summaryData.get(String.valueOf(group.groupNo)) : [:]}"/>
     <g:render template="/illiad/summary_row"
               model="[currentDataMap: currentDataMap,
                       index: (i + 1),

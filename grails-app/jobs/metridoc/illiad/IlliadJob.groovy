@@ -1,29 +1,191 @@
 package metridoc.illiad
 
-class IlliadJob extends Script {
+import groovy.sql.Sql
+import metridoc.core.MetridocJob
+import metridoc.utils.DateUtil
+
+import java.sql.ResultSet
+import java.sql.SQLException
+import java.text.SimpleDateFormat
+
+class IlliadJob extends MetridocJob {
 
     def dataSource_from_illiad
     def dataSource
+    def illiadService
+    Sql sql
+    Sql fromIlliadSql
+    IlliadMsSqlQueries illiadSqlStatements = new IlliadMsSqlQueries()
+    static final LENDER_ADDRESSES_ALL = "LenderAddressesAll"
+    static final LENDER_ADDRESSES = "LenderAddresses"
+    static final USERS = "Users"
+    static final USERS_ALL = "UsersAll"
+    public static final String OTHER = "Other"
 
-    //TODO:need to fix the core so scripts can be called via the commandline easily instead of requiring this mess
-    def execute(jobExecutionContext) {
-        run()
+    def _lenderTableName
+    def _userTableName
+    String startDate
+    def illiadTables = [
+            "ill_group",
+            "ill_lending",
+            "ill_borrowing",
+            "ill_user_info",
+            "ill_transaction",
+            "ill_lender_info",
+            "ill_lender_group",
+            "ill_lending_tracking",
+            "ill_location",
+            "ill_reference_number",
+            "ill_tracking"
+    ]
+
+    @Override
+    def configure() {
+
+        target(runWorkflow: "runs the full illiad workflow") {
+            depends("clearingIlliadTables",
+                    "migrateData",
+                    "migrateBorrowingDataToIllTracking",
+                    "doUpdateBorrowing",
+                    "doUpdateLending",
+                    "doIllGroupOtherInsert",
+                    "cleanUpIllTransactionLendingLibraries")
+        }
+
+        target(clearingIlliadTables: "truncates all tables") {
+            if (illiadService) {
+                illiadService.storeCache()
+            }
+
+            illiadTables.each {
+                log.info "truncating table ${it} in the repository"
+                getSql().execute("truncate ${it}" as String)
+            }
+        }
+
+        target(migrateData: "migrates data from illiad to repository instance") {
+            //adding variables to the binding makes them accessible to the camel tool
+            binding.dataSource = dataSource
+            binding.dataSource_from_illiad = dataSource_from_illiad
+            [
+                    ill_group: illiadSqlStatements.groupSqlStmt,
+                    ill_lender_group: illiadSqlStatements.groupLinkSqlStmt,
+                    ill_lender_info: illiadSqlStatements.lenderAddrSqlStmt(lenderTableName),
+                    ill_reference_number: illiadSqlStatements.referenceNumberSqlStmt,
+                    ill_transaction: illiadSqlStatements.transactionSqlStmt(getStartDate()),
+                    ill_lending: illiadSqlStatements.lendingSqlStmt(getStartDate()),
+                    ill_borrowing: illiadSqlStatements.borrowingSqlStmt(getStartDate()),
+                    ill_user_info: illiadSqlStatements.userSqlStmt(userTableName)
+
+            ].each { key, value ->
+                log.info("migrating to ${key} using \n    ${value}" as String)
+                consumeNoWait("sqlplus:${value}?dataSource=dataSource_from_illiad") { ResultSet resultSet ->
+                    send("sqlplus:${key}?dataSource=dataSource", resultSet)
+                }
+            }
+        }
+
+        target(migrateBorrowingDataToIllTracking: "migrates data from illborrowing to ill_tracking") {
+            IllTracking.updateFromIllBorrowing()
+        }
+
+        target(doUpdateBorrowing: "updates the borrowing tables") {
+            [
+                    illiadSqlStatements.orderDateSqlStmt,
+                    illiadSqlStatements.shipDateSqlStmt,
+                    illiadSqlStatements.receiveDateSqlStmt,
+                    illiadSqlStatements.articleReceiveDateSqlStmt
+            ].each {
+                log.info "update borrowing with sql statement $it"
+                getSql().execute(it as String)
+            }
+        }
+
+        target(doUpdateLending: "updates the lending table") {
+            [
+                    illiadSqlStatements.arrivalDateSqlStmt,
+                    illiadSqlStatements.completionSqlStmt,
+                    illiadSqlStatements.cancelledSqlStmt
+            ].each {
+                log.info "updating lending with sql statement $it"
+                getSql().execute(it as String)
+            }
+        }
+
+        target(doIllGroupOtherInsert: "inserts extra records into ill_group to deal with 'OTHER'") {
+            IllGroup.withNewTransaction {
+                new IllGroup(groupNo: IlliadService.GROUP_ID_OTHER, groupName: OTHER).save(failOnError: true)
+                new IllLenderGroup(groupNo: IlliadService.GROUP_ID_OTHER, lenderCode: OTHER).save(failOnError: true)
+            }
+        }
+
+        target(cleanUpIllTransactionLendingLibraries: "cleans up data in ill_transaction, ill_lending_tracking and ill_tracking to facilitate agnostic sql queries in the dashboard") {
+            getSql().execute("update ill_transaction set lending_library = 'Other' where lending_library is null")
+            getSql().execute("update ill_transaction set lending_library = 'Other' where lending_library not in (select distinct lender_code from ill_lender_group)")
+            IllTracking.updateTurnAroundsForAllRecords()
+            IllLendingTracking.updateTurnAroundsForAllRecords()
+            if (illiadService) {
+                illiadService.storeCache()
+            }
+        }
+
+        target(dropTables: "drops illiad tables") {
+            illiadTables.each {
+                getSql().execute("drop table $it" as String)
+            }
+        }
+
+        setDefaultTarget("runWorkflow")
     }
 
-    @SuppressWarnings("GroovyVariableNotAssigned")
-    @Override
-    def run() {
-        //TODO:need to get rid of this in the core.... just dump info in the binding or auto bind
-        def jobDataMap = binding.jobDataMap
-        String targetToRun
-        if (jobDataMap) {
-            targetToRun = jobDataMap.target
+    Sql getSql() {
+        if (sql) return sql
+        sql = new Sql(dataSource)
+    }
+
+    def getLenderTableName() {
+        if (_lenderTableName) return _lenderTableName
+
+        _lenderTableName = pickTable(LENDER_ADDRESSES_ALL, LENDER_ADDRESSES)
+    }
+
+    def getUserTableName() {
+        if (_userTableName) return _userTableName
+
+        _userTableName = pickTable(USERS, USERS_ALL)
+    }
+
+    String getStartDate() {
+        if (startDate) return startDate
+
+        def formatter = new SimpleDateFormat('yyyyMMdd')
+        def fiscalYear = DateUtil.currentFiscalYear
+        def startDateAsDate = DateUtil.getFiscalYearStartDate(fiscalYear)
+
+        startDate = formatter.format(startDateAsDate)
+    }
+
+    private pickTable(option1, option2) {
+        if (tableExists(option1)) {
+            return option1
+        } else {
+            return option2
         }
-        def tool = new IlliadTool()
-        tool.setTargetToRun(targetToRun)
-        tool.dataSource = dataSource
-        tool.dataSource_from_illiad = dataSource_from_illiad
-        tool.binding = binding
-        tool.configure()
+    }
+
+    private tableExists(tableName) {
+        try {
+            getFromIlliadSql().execute("select count(*) from $tableName" as String)
+            return true
+        } catch (SQLException e) {
+            //table does not exist
+            return false
+        }
+    }
+
+    def getFromIlliadSql() {
+        if (fromIlliadSql) return fromIlliadSql
+
+        fromIlliadSql = new Sql(dataSource_from_illiad)
     }
 }

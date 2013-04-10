@@ -35,7 +35,7 @@ grails.project.dependency.resolution = {
     }
 
     plugins {
-        compile(":metridoc-core:0.54-SNAPSHOT")
+        compile(":metridoc-core:0.54.1")
         build ":tomcat:$grailsVersion"
         build ":rest-client-builder:1.0.2"
         build ":release:$grailsVersion"
