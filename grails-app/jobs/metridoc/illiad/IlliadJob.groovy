@@ -4,6 +4,7 @@ import groovy.sql.Sql
 import metridoc.core.MetridocJob
 import metridoc.utils.DateUtil
 
+import javax.sql.DataSource
 import java.sql.ResultSet
 import java.sql.SQLException
 import java.text.SimpleDateFormat
@@ -53,10 +54,6 @@ class IlliadJob extends MetridocJob {
         }
 
         target(clearingIlliadTables: "truncates all tables") {
-            if (illiadService) {
-                illiadService.storeCache()
-            }
-
             illiadTables.each {
                 log.info "truncating table ${it} in the repository"
                 getSql().execute("truncate ${it}" as String)
@@ -70,12 +67,12 @@ class IlliadJob extends MetridocJob {
             [
                     ill_group: illiadSqlStatements.groupSqlStmt,
                     ill_lender_group: illiadSqlStatements.groupLinkSqlStmt,
-                    ill_lender_info: illiadSqlStatements.lenderAddrSqlStmt(lenderTableName),
+                    ill_lender_info: illiadSqlStatements.lenderAddrSqlStmt(lenderTableName as String),
                     ill_reference_number: illiadSqlStatements.referenceNumberSqlStmt,
                     ill_transaction: illiadSqlStatements.transactionSqlStmt(getStartDate()),
                     ill_lending: illiadSqlStatements.lendingSqlStmt(getStartDate()),
                     ill_borrowing: illiadSqlStatements.borrowingSqlStmt(getStartDate()),
-                    ill_user_info: illiadSqlStatements.userSqlStmt(userTableName)
+                    ill_user_info: illiadSqlStatements.userSqlStmt(userTableName as String)
 
             ].each { key, value ->
                 log.info("migrating to ${key} using \n    ${value}" as String)
@@ -120,8 +117,15 @@ class IlliadJob extends MetridocJob {
         }
 
         target(cleanUpIllTransactionLendingLibraries: "cleans up data in ill_transaction, ill_lending_tracking and ill_tracking to facilitate agnostic sql queries in the dashboard") {
-            getSql().execute("update ill_transaction set lending_library = 'Other' where lending_library is null")
-            getSql().execute("update ill_transaction set lending_library = 'Other' where lending_library not in (select distinct lender_code from ill_lender_group)")
+
+            getSql().withTransaction {
+                int updates
+                updates = getSql().executeUpdate("update ill_transaction set lending_library = 'Other' where lending_library is null")
+                log.info "changing all lending_library entries in ill_transaction from null to other caused $updates updates"
+                updates = getSql().executeUpdate("update ill_transaction set lending_library = 'Other' where lending_library not in (select distinct lender_code from ill_lender_group)")
+                log.info "changing all lending_library entries in ill_transaction that are not in ill_lender_group to other caused $updates updates"
+            }
+
             IllTracking.updateTurnAroundsForAllRecords()
             IllLendingTracking.updateTurnAroundsForAllRecords()
             if (illiadService) {
@@ -140,7 +144,7 @@ class IlliadJob extends MetridocJob {
 
     Sql getSql() {
         if (sql) return sql
-        sql = new Sql(dataSource)
+        sql = new Sql(dataSource as DataSource)
     }
 
     def getLenderTableName() {
@@ -186,6 +190,6 @@ class IlliadJob extends MetridocJob {
     def getFromIlliadSql() {
         if (fromIlliadSql) return fromIlliadSql
 
-        fromIlliadSql = new Sql(dataSource_from_illiad)
+        fromIlliadSql = new Sql(dataSource_from_illiad as DataSource)
     }
 }
