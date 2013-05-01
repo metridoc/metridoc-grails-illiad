@@ -1,3 +1,4 @@
+<%@ page import="metridoc.utils.DateUtil" %>
 <%--
   Created by IntelliJ IDEA.
   User: tbarker
@@ -9,39 +10,39 @@
 <md:report>
 
     <div id="updateInfo">last update: ${lastUpdated}</div>
-    <md:header>Borrowing for the Current Fiscal Year</md:header>
+    <md:header>Borrowing for the Current Fiscal Year (${DateUtil.currentFiscalYear})</md:header>
 
     <div class='subReportBody'>
-        <div class='subHeadRow'>Books</div>
+        <tmpl:aggregationHeader>Books</tmpl:aggregationHeader>
         <g:render template="/illiad/summary_group"
                   model="[summaryData: basicStatsData.books.borrowing,
                           allRowName: allRowName,
                           groups: groups,
-                          isBorrowing: true]" plugin="metridoc-illiad"/>
-        <div class='subHeadRow'>Articles</div>
+                          isBorrowing: true]"/>
+        <tmpl:aggregationHeader>Articles</tmpl:aggregationHeader>
         <g:render template="/illiad/summary_group"
                   model="[summaryData: basicStatsData.articles.borrowing,
                           allRowName: allRowName,
                           groups: groups,
-                          isBorrowing: true]" plugin="metridoc-illiad"/>
+                          isBorrowing: true]"/>
     </div>
 
-    <md:header>Lending for the Current Fiscal Year</md:header>
+    <md:header>Lending for the Current Fiscal Year (${DateUtil.currentFiscalYear})</md:header>
 
     <div class='subReportBody'>
 
-        <div class='subHeadRow'>Books</div>
+        <tmpl:aggregationHeader>Books</tmpl:aggregationHeader>
         <g:render template="/illiad/summary_group"
                   model="[summaryData: basicStatsData.books.lending,
                           allRowName: allRowName,
                           groups: groups,
-                          isBorrowing: false]" plugin="metridoc-illiad"/>
-        <div class='subHeadRow'>Articles</div>
+                          isBorrowing: false]"/>
+        <tmpl:aggregationHeader>Articles</tmpl:aggregationHeader>
         <g:render template="/illiad/summary_group"
                   model="[summaryData: basicStatsData.articles.lending,
                           allRowName: allRowName,
                           groups: groups,
-                          isBorrowing: false]" plugin="metridoc-illiad"/>
+                          isBorrowing: false]"/>
     </div>
 
 </md:report>

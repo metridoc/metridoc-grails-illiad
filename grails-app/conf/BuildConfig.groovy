@@ -26,19 +26,9 @@ grails.project.dependency.resolution = {
         mavenRepo "https://metridoc.googlecode.com/svn/maven/repository"
     }
 
-    dependencies {
-        compile("org.liquibase:liquibase-core:2.0.5")
-        //makes the plugin play nice with Intellij
-        build("org.tmatesoft.svnkit:svnkit:1.3.5") {
-            excludes "jna", "trilead-ssh2", "sqljet"
-        }
-    }
-
     plugins {
-        compile(":metridoc-core:0.54.1")
+        compile(":metridoc-core:0.54.3")
         build ":tomcat:$grailsVersion"
-        build ":rest-client-builder:1.0.2"
         build ":release:$grailsVersion"
-        build ":svn:1.0.2"
     }
 }
