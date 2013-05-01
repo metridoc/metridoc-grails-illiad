@@ -1,6 +1,6 @@
 class MetridocIlliadGrailsPlugin {
     // the plugin version
-    def version = "0.3.3"
+    def version = "0.3.4"
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "2.0 > *"
 

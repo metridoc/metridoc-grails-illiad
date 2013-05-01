@@ -1,9 +1,11 @@
 package metridoc.illiad
 
+import au.com.bytecode.opencsv.CSVWriter
 import groovy.sql.Sql
 import metridoc.utils.DateUtil
 
 import javax.sql.DataSource
+import java.sql.ResultSet
 
 class IlliadService {
     /*
@@ -11,6 +13,7 @@ class IlliadService {
      */
     static final int GROUP_ID_OTHER = -2;
     static final int GROUP_ID_TOTAL = -1;
+    static final String ENCODING = "utf-8"
 
     DataSource dataSourceUnproxied_illiad
     DataSource dataSourceUnproxied
@@ -21,6 +24,14 @@ class IlliadService {
         }
 
         return dataSourceUnproxied
+    }
+
+    def streamIlliadDataAsCsv(String type, boolean borrowing, OutputStream outputStream) {
+        def sql = new Sql(dataSourceUnproxied)
+        sql.query(selectAllFromIllTransaction(type, borrowing)) { ResultSet resultSet ->
+            def writer = new OutputStreamWriter(outputStream, ENCODING as String)
+            new CSVWriter(writer).writeAll(resultSet, true)
+        }
     }
 
     def getBasicStatsData(fiscalYear) {
@@ -245,4 +256,14 @@ class IlliadService {
                         where t.process_type='Lending' and t.request_type=? and transaction_date between ? and ?
                         and transaction_status='Request Finished' and lt.completion_date is not null and lt.arrival_date is not null
     		'''
+
+    def selectAllFromIllTransaction = { String type, boolean isBorrowing ->
+        def processType = isBorrowing ? "Borrowing" : "Lending"
+        """
+            select *
+            from ill_transaction
+            where process_type = ${processType}
+                and request_type= ${type}
+        """
+    }
 }

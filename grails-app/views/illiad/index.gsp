@@ -13,13 +13,13 @@
     <md:header>Borrowing for the Current Fiscal Year (${DateUtil.currentFiscalYear})</md:header>
 
     <div class='subReportBody'>
-        <tmpl:aggregationHeader>Books</tmpl:aggregationHeader>
+        <tmpl:aggregationHeader type="Loan" borrowing="true">Books</tmpl:aggregationHeader>
         <g:render template="/illiad/summary_group"
                   model="[summaryData: basicStatsData.books.borrowing,
                           allRowName: allRowName,
                           groups: groups,
                           isBorrowing: true]"/>
-        <tmpl:aggregationHeader>Articles</tmpl:aggregationHeader>
+        <tmpl:aggregationHeader type="Article" borrowing="true">Articles</tmpl:aggregationHeader>
         <g:render template="/illiad/summary_group"
                   model="[summaryData: basicStatsData.articles.borrowing,
                           allRowName: allRowName,
@@ -31,13 +31,13 @@
 
     <div class='subReportBody'>
 
-        <tmpl:aggregationHeader>Books</tmpl:aggregationHeader>
+        <tmpl:aggregationHeader type="Loan" borrowing="false">Books</tmpl:aggregationHeader>
         <g:render template="/illiad/summary_group"
                   model="[summaryData: basicStatsData.books.lending,
                           allRowName: allRowName,
                           groups: groups,
                           isBorrowing: false]"/>
-        <tmpl:aggregationHeader>Articles</tmpl:aggregationHeader>
+        <tmpl:aggregationHeader type="Article" borrowing="false">Articles</tmpl:aggregationHeader>
         <g:render template="/illiad/summary_group"
                   model="[summaryData: basicStatsData.articles.lending,
                           allRowName: allRowName,
