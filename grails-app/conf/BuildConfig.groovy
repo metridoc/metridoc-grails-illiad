@@ -27,8 +27,17 @@ grails.project.dependency.resolution = {
     }
 
     plugins {
-        compile(":metridoc-core:0.54.3")
-        build ":tomcat:$grailsVersion"
-        build ":release:$grailsVersion"
+        compile(":metridoc-core:0.7.1") {
+            excludes "job-runner"
+        }
+
+        build ':release:2.2.1',
+                ':rest-client-builder:1.0.3',
+                ":tomcat:$grailsVersion",
+                ':squeaky-clean:0.1.1',
+                ':job-runner:0.6', {
+
+            export = false
+        }
     }
 }
