@@ -3,7 +3,7 @@ package metridoc.illiad
 class IlliadController {
 
     static reportName = "Illiad Dashboards"
-    def illiadService
+    def illiadReportingService
 
     static homePage = [
             title: "Illiad Dashboard",
@@ -19,7 +19,7 @@ class IlliadController {
         }
 
         if (refresh) {
-            illiadService.storeCache()
+            illiadReportingService.storeCache()
         }
 
         return IllCache.data
@@ -34,7 +34,7 @@ class IlliadController {
             response.setContentType("text/csv")
             def fileName = borrowing ? "${type.toLowerCase()}_borrowing.csv" : "${type.toLowerCase()}_lending.csv"
             response.setHeader("Content-Disposition", "attachment;filename=${fileName}")
-            illiadService.streamIlliadDataAsCsv(type, borrowing, response.outputStream)
+            illiadReportingService.streamIlliadDataAsCsv(type, borrowing, response.outputStream)
         }
     }
 }

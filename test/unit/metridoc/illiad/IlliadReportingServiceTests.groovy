@@ -7,8 +7,8 @@ import org.junit.Test
  * Created with IntelliJ IDEA on 5/1/13
  * @author Tommy Barker
  */
-@TestFor(IlliadService)
-class IlliadServiceTests {
+@TestFor(IlliadReportingService)
+class IlliadReportingServiceTests {
 
     @Test
     void "test selectAllFromIllTransactionClosure"() {
