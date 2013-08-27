@@ -13,7 +13,7 @@ class IlliadJob extends MetridocJob {
 
     def dataSource_from_illiad
     def dataSource
-    def illiadService
+    def illiadReportingService
     Sql sql
     Sql fromIlliadSql
     IlliadMsSqlQueries illiadSqlStatements = new IlliadMsSqlQueries()
@@ -111,8 +111,8 @@ class IlliadJob extends MetridocJob {
 
         target(doIllGroupOtherInsert: "inserts extra records into ill_group to deal with 'OTHER'") {
             IllGroup.withNewTransaction {
-                new IllGroup(groupNo: IlliadService.GROUP_ID_OTHER, groupName: OTHER).save(failOnError: true)
-                new IllLenderGroup(groupNo: IlliadService.GROUP_ID_OTHER, lenderCode: OTHER).save(failOnError: true)
+                new IllGroup(groupNo: IlliadReportingService.GROUP_ID_OTHER, groupName: OTHER).save(failOnError: true)
+                new IllLenderGroup(groupNo: IlliadReportingService.GROUP_ID_OTHER, lenderCode: OTHER).save(failOnError: true)
             }
         }
 
@@ -128,8 +128,8 @@ class IlliadJob extends MetridocJob {
 
             IllTracking.updateTurnAroundsForAllRecords()
             IllLendingTracking.updateTurnAroundsForAllRecords()
-            if (illiadService) {
-                illiadService.storeCache()
+            if (illiadReportingService) {
+                illiadReportingService.storeCache()
             }
         }
 
@@ -181,7 +181,7 @@ class IlliadJob extends MetridocJob {
         try {
             getFromIlliadSql().execute("select count(*) from $tableName" as String)
             return true
-        } catch (SQLException e) {
+        } catch (SQLException ignored) {
             //table does not exist
             return false
         }
