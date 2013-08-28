@@ -9,4 +9,5 @@ addToolTips();
 
 function addToolTips() {
     $('.aggregation-header').tooltip();
+    $('.icon-download-alt').tooltip();
 }
