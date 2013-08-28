@@ -7,7 +7,7 @@ import metridoc.utils.DateUtil
 import javax.sql.DataSource
 import java.sql.ResultSet
 
-class IlliadService {
+class IlliadReportingService {
     /*
         LOOK AT BOTTOM OF CLASS FOR QUERY DEFINITIONS
      */
