@@ -8,22 +8,15 @@ grails.project.repos.metridocRepo.url = "svn:https://metridoc.googlecode.com/svn
 grails.project.repos.default = "metridocRepo"
 
 grails.project.dependency.resolution = {
-
-
-    grails.tomcat.jvmArgs = ["-Xmx768M", "-Xms768M", "-XX:PermSize=512m", "-XX:MaxPermSize=512m"]
-    // inherit Grails' default dependencies
-    inherits("global") {
-        // uncomment to disable ehcache
-        // excludes 'ehcache'
-    }
+    inherits("global")
     log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
     repositories {
         grailsCentral()
+        //TODO: get rid of this once we have locked down versions
         mavenLocal()
         mavenCentral()
-        grailsPlugins()
-        grailsHome()
-        mavenRepo "https://metridoc.googlecode.com/svn/maven/repository"
+        mavenRepo "http://dl.bintray.com/upennlib/metridoc"
+        mavenRepo "http://dl.bintray.com/upennlib/maven"
     }
 
     plugins {
