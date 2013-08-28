@@ -9,7 +9,7 @@ import java.sql.ResultSet
 import java.sql.SQLException
 import java.text.SimpleDateFormat
 
-class IlliadJob extends MetridocJob {
+class IlliadService extends MetridocJob {
 
     def dataSource_from_illiad
     def dataSource
@@ -44,6 +44,10 @@ class IlliadJob extends MetridocJob {
     def configure() {
 
         target(runWorkflow: "runs the full illiad workflow") {
+            def migratingFromUrl = (dataSource_from_illiad as DataSource).connection.metaData.getURL()
+            def migratingToUrl = (dataSource as DataSource).connection.metaData.getURL()
+            log.info "migrating from $migratingFromUrl to $migratingToUrl"
+
             depends("clearingIlliadTables",
                     "migrateData",
                     "migrateBorrowingDataToIllTracking",
