@@ -79,19 +79,11 @@ grails.enable.native2ascii = true
 grails.web.disable.multipart = false
 grails.exceptionresolver.params.exclude = ['password']
 metridoc.app.name = appName
+grails.resources.debug = true
 
-// set per-environment serverURL stem for creating absolute links
-environments {
-    development {
-        grails.logging.jul.usebridge = true
-        grails.gsp.reload.enable = true
-        grails.resources.processing.enabled = true
-        grails.resources.debug = true
-    }
-}
 
 log4j = {
-    error  'org.codehaus.groovy.grails.web.servlet',        // controllers
+    error 'org.codehaus.groovy.grails.web.servlet',        // controllers
             'org.codehaus.groovy.grails.web.pages',          // GSP
             'org.codehaus.groovy.grails.web.sitemesh',       // layouts
             'org.codehaus.groovy.grails.web.mapping.filter', // URL mapping
@@ -102,6 +94,7 @@ log4j = {
             'org.springframework',
             'org.hibernate',
             'net.sf.ehcache.hibernate'
+    info 'metridoc'
 }
 
 //TEMPLATE_LOG_4J
