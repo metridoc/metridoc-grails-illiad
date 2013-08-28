@@ -20,16 +20,18 @@ grails.project.dependency.resolution = {
     }
 
     plugins {
+        //TODO: more up to date versions of the core do not require the exclusions.  remove once we update the core
         compile(":metridoc-core:0.7.1") {
             excludes "job-runner"
+            excludes "database-session"
         }
+
+        runtime(":job-runner:0.6.1")
 
         build ':release:2.2.1',
                 ':rest-client-builder:1.0.3',
                 ":tomcat:$grailsVersion",
-                ':squeaky-clean:0.1.1',
-                ':job-runner:0.6', {
-
+                ':squeaky-clean:0.1.1', {
             export = false
         }
     }
