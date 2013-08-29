@@ -1,4 +1,4 @@
 metridoc-grails-illiad
 ======================
 
-grails illiad plugin
+Details about teh plugin are [here](https://github.com/metridoc/metridoc-wiki/wiki/Illiad)
