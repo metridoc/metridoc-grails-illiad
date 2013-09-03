@@ -19,6 +19,7 @@ grails.project.dependency.resolution = {
     dependencies {
         compile('com.github.metridoc:metridoc-job-core:0.7.6') {
             excludes 'slf4j-api'
+            excludes 'jcl-over-slf4j'
         }
     }
 
