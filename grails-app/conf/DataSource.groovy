@@ -57,39 +57,3 @@ environments {
     }
 }
 
-//this should be set to use the mssql instance
-dataSource_from_illiad {
-    pooled = true
-    dbCreate = "update"
-    url = "jdbc:h2:mem:developmentDb;MVCC=TRUE"
-    properties {
-        maxActive = -1
-        minEvictableIdleTimeMillis = 1800000
-        timeBetweenEvictionRunsMillis = 1800000
-        numTestsPerEvictionRun = 3
-        testOnBorrow = true
-        testWhileIdle = true
-        testOnReturn = true
-        validationQuery = "SELECT 1"
-    }
-}
-
-//example of setting it to msssql
-//dataSource_from_illiad {
-//    pooled = true
-//    driverClassName = "com.microsoft.sqlserver.jdbc.SQLServerDriver"
-//    dbCreate = "none"
-//    username = "metridoc"
-//    password = "password"
-//    url = "jdbc:sqlserver://172.16.116.120:1433;databaseName=ILLData"
-//    properties {
-//      maxActive = -1
-//      minEvictableIdleTimeMillis=1800000
-//      timeBetweenEvictionRunsMillis=1800000
-//      numTestsPerEvictionRun=3
-//      testOnBorrow=true
-//      testWhileIdle=true
-//      testOnReturn=true
-//      validationQuery="SELECT 1"
-//  }
-//}
