@@ -1,10 +1,8 @@
 package metridoc.utils
 
 /**
- * Created by IntelliJ IDEA.
- * User: tbarker
- * Date: 7/13/12
- * Time: 10:43 AM
+ * Created with IntelliJ IDEA on 9/9/13
+ * @author Tommy Barker
  */
 class DateUtil {
     public static FY_START_MONTH = Calendar.JULY;

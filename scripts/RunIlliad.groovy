@@ -1,7 +1,7 @@
 includeTargets << grailsScript("_GrailsBootstrap")
 
 target(main: "main entry point into the illiad script") {
-    grailsConsole.error "run-illiad script is no longer supported, please run 'grails run-job illiad' instead"
+    grailsConsole.error "run-illiad is no longer supportted please so the job project here: https://github.com/metridoc/metridoc-job-illiad"
     exit(1)
 }
 

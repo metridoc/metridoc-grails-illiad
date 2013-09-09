@@ -13,16 +13,14 @@ class IlliadController {
     ]
 
     def index() {
-        def refresh = false
-        if (params.refresh) {
-            refresh = params.refresh
-        }
 
-        if (refresh) {
-            illiadReportingService.storeCache()
+        def data = IllCache.data
+        if(data) {
+            return data
         }
-
-        return IllCache.data
+        else {
+             render(view: "dataNotAvailable")
+        }
     }
 
     def download(String type, Boolean borrowing) {

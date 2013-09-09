@@ -16,16 +16,8 @@ grails.project.dependency.resolution = {
         mavenRepo "http://dl.bintray.com/upennlib/maven"
     }
 
-    dependencies {
-        compile('com.github.metridoc:metridoc-job-core:0.7.6') {
-            excludes 'slf4j-api'
-            excludes 'jcl-over-slf4j'
-        }
-    }
-
     plugins {
-        compile ':metridoc-core:0.7.2'
-        runtime ':job-runner:0.6.1'
+        compile ':metridoc-core:0.7.7'
 
         build ':release:2.2.1',
                 ':rest-client-builder:1.0.3',

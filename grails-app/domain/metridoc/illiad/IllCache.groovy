@@ -16,28 +16,6 @@ class IllCache {
         jsonData(maxSize: Integer.MAX_VALUE)
     }
 
-    static void update(String jsonData) {
-        withNewTransaction {
-            if (count()) {
-                def illCache = list().get(0)
-                illCache.jsonData = jsonData
-                illCache.save(failOnError: true)
-            } else {
-                new IllCache(jsonData: jsonData).save(failOnError: true)
-            }
-        }
-    }
-
-    static void update(Map data) {
-        //had to use grails's json marshalling instead of groovy's since it has an error that causes a stack overflow
-        def converter = new JSON(data)
-        update(converter)
-    }
-
-    static void update(JSON json) {
-        update(json.toString())
-    }
-
     static getData() {
         if (count() == 0) return null
 
