@@ -16,6 +16,10 @@ grails.project.dependency.resolution = {
         mavenRepo "http://dl.bintray.com/upennlib/maven"
     }
 
+    dependencies {
+        compile 'net.sf.opencsv:opencsv:2.3'
+    }
+
     plugins {
         compile ':metridoc-core:0.7.7'
 
