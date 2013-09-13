@@ -98,8 +98,8 @@ class DateUtil {
                 return "November"
             case Calendar.DECEMBER:
                 return "December"
-            throw new IllegalArgumentException("Could not convert [$monthNumber] to a month")
         }
+        throw new IllegalArgumentException("Could not convert [$monthNumber] to a month")
     }
 }
 
