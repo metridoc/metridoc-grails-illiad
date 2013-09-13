@@ -67,5 +67,39 @@ class DateUtil {
     private static boolean datesNotNull(Date dateOne, Date dateTwo) {
         dateOne != null && dateTwo != null
     }
+
+    static String getFiscalMonth() {
+        getMonthName(FY_START_MONTH)
+    }
+
+    static String getMonthName(int monthNumber) {
+        switch(monthNumber) {
+            case Calendar.JANUARY:
+                return "January"
+            case Calendar.FEBRUARY:
+                return "February"
+            case Calendar.MARCH:
+                return "March"
+            case Calendar.APRIL:
+                return "April"
+            case Calendar.MAY:
+                return "May"
+            case Calendar.JUNE:
+                return "June"
+            case Calendar.JULY:
+                return "July"
+            case Calendar.AUGUST:
+                return "August"
+            case Calendar.SEPTEMBER:
+                return "September"
+            case Calendar.OCTOBER:
+                return "October"
+            case Calendar.NOVEMBER:
+                return "November"
+            case Calendar.DECEMBER:
+                return "December"
+            throw new IllegalArgumentException("Could not convert [$monthNumber] to a month")
+        }
+    }
 }
 

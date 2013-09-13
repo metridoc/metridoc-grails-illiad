@@ -10,7 +10,7 @@
 <md:report>
 
     <div id="updateInfo">last update: ${lastUpdated}</div>
-    <md:header>Borrowing for the Current Fiscal Year (${DateUtil.currentFiscalYear})</md:header>
+    <md:header>Borrowing for the Current Fiscal Year (${month} to Present)</md:header>
 
     <div class='subReportBody'>
         <tmpl:aggregationHeader type="Loan" borrowing="true">Books</tmpl:aggregationHeader>
@@ -27,7 +27,7 @@
                           isBorrowing: true]"/>
     </div>
 
-    <md:header>Lending for the Current Fiscal Year (${DateUtil.currentFiscalYear})</md:header>
+    <md:header>Lending for the Current Fiscal Year (${month} to Present)</md:header>
 
     <div class='subReportBody'>
 

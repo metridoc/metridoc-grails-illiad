@@ -1,5 +1,7 @@
 package metridoc.illiad
 
+import metridoc.utils.DateUtil
+
 class IlliadController {
 
     static reportName = "Illiad Dashboards"
@@ -13,9 +15,10 @@ class IlliadController {
     ]
 
     def index() {
-
+        DateUtil.FY_START_MONTH = IllFiscalStartMonth.first()?.month ?: Calendar.JULY
         def data = IllCache.data
         if(data) {
+            data.month = DateUtil.getFiscalMonth()
             return data
         }
         else {
