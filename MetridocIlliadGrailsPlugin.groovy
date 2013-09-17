@@ -1,13 +1,13 @@
 class MetridocIlliadGrailsPlugin {
-    def version = "0.4.1"
+    def version = "0.4.2"
     def grailsVersion = "2.0 > *"
 
     def title = "Metridoc Illiad Plugin" // Headline display name of the plugin
     def author = "Thomas Barker"
-    def authorEmail = ""
+    def authorEmail = "tbarker@pobox.upenn.edu"
     def description = '''\
-Provides a job for collecting and storing illiad data for the current fiscal year.  Also a very simple dashboard is provided
-to display some simple stats for the current fiscal year
+Simple dashboard is provided
+to display some simple stats for the current fiscal year and to download all available data
 '''
 
     def documentation = "https://github.com/metridoc/metridoc-grails-illiad"
