@@ -33,10 +33,16 @@ class IlliadReportingService {
             def columnsWithShortTrans = addShortTransDateColumn(columns)
             def writer = new OutputStreamWriter(outputStream, ENCODING as String)
             def csvWriter = new CSVWriter(writer)
-            csvWriter.writeNext(columnsWithShortTrans)
-            while(resultSet.next()) {
-                def line = addShortTransDateValue(resultSet, resultSetHelperService)
-                csvWriter.writeNext(line)
+            try {
+                csvWriter.writeNext(columnsWithShortTrans)
+                while(resultSet.next()) {
+                    def line = addShortTransDateValue(resultSet, resultSetHelperService)
+                    csvWriter.writeNext(line)
+                }
+            }
+            finally {
+                csvWriter.flush()
+                csvWriter.close()
             }
         }
     }
