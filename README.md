@@ -32,7 +32,7 @@ This plugin assumes that you have run the [illiad job](http://github.com/metrido
 into the central repo.  All the plugin does is create a basic dashboard of illiad stats and download buttons to grab the 
 data.
 
-If all goes well, you should see a dashboard similar to:
+If all goes well, you should see a dashboard at `http://metridoc.host:port/metridoc/illiad` similar to:
 
 ![Illiad Dashboard](https://raw.github.com/metridoc/metridoc-grails-illiad/master/docs/dashboardScreenForREADME.png)
 
