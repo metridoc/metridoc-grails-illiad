@@ -16,12 +16,17 @@ grails.project.dependency.resolution = {
 
     plugins {
         //other plugins
+        
+        //you can change the illiad version here
         compile (":metridoc-illiad:0.4.2") {
             excludes "metridoc-core"
         }
     }
 }
 ```
+
+You can find the most recent version of the plugin [here](https://bintray.com/upennlib/metridoc/metridoc-illiad).  
+`metridoc-core` is excluded in case the plugin is using an outdated version of `metridoc-core`.
 
 This plugin assumes that you have run the [illiad job](http://github.com/metridoc/metridoc-job-illiad) to migrate the data 
 into the central repo.  All the plugin does is create a basic dashboard of illiad stats and download buttons to grab the 
