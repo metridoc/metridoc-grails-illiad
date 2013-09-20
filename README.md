@@ -29,6 +29,7 @@ data.
 
 If all goes well, you should see a dashboard similar to:
 
+!(Illiad Dashboard)[https://raw.github.com/metridoc/metridoc-grails-illiad/master/docs/dashboardScreenForREADME.png]
 
 
 
