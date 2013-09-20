@@ -31,6 +31,10 @@ If all goes well, you should see a dashboard similar to:
 
 ![Illiad Dashboard](https://raw.github.com/metridoc/metridoc-grails-illiad/master/docs/dashboardScreenForREADME.png)
 
+The plugin only relies on two tables that were created by the
+[illiad job](http://github.com/metridoc/metridoc-job-illiad), `ill_cache` and `ill_transaction`.  `ill_cache` contains
+all the dashboard data in json format while `ill_transaction` provides all the data that can be downloaded.
+
 
 
 
