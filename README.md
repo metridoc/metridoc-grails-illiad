@@ -33,7 +33,8 @@ If all goes well, you should see a dashboard similar to:
 
 The plugin only relies on two tables that were created by the
 [illiad job](http://github.com/metridoc/metridoc-job-illiad), `ill_cache` and `ill_transaction`.  `ill_cache` contains
-all the dashboard data in json format while `ill_transaction` provides all the data that can be downloaded.
+all the dashboard data in json format while `ill_transaction` provides all the data that can be downloaded.  See the 
+[illiad job](http://github.com/metridoc/metridoc-job-illiad) for more details about the illiad table structure.
 
 
 
