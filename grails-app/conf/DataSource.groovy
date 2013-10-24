@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Trustees of the University of Pennsylvania Licensed under the
+  *Copyright 2013 Trustees of the University of Pennsylvania. Licensed under the
  * Educational Community License, Version 2.0 (the "License"); you may
  * not use this file except in compliance with the License. You may
  * obtain a copy of the License at
